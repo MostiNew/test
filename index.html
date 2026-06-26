@@ -566,6 +566,124 @@
             display: inline-block;
         }
 
+        /* Caregiver & Token styles */
+        .caregiver-section {
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 8px 12px;
+            margin: 6px 0;
+        }
+        .caregiver-section .meta-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 4px;
+        }
+        .caregiver-section .meta-field {
+            flex: 1 1 140px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .caregiver-section .meta-field label {
+            font-size: 0.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #4a5b6e;
+        }
+        .caregiver-section .meta-field input {
+            padding: 3px 6px;
+            border-radius: 6px;
+            border: 1px solid #d9e1ec;
+            font-size: 0.7rem;
+            background: white;
+        }
+        .caregiver-section .meta-actions {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+            margin-top: 4px;
+            align-items: center;
+        }
+        .caregiver-section .meta-actions button {
+            padding: 3px 10px;
+            border-radius: 30px;
+            border: none;
+            font-weight: 600;
+            font-size: 0.6rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-token {
+            background: #005792;
+            color: white;
+        }
+        .btn-token:hover {
+            background: #003d6b;
+        }
+        .btn-vault {
+            background: #6f42c1;
+            color: white;
+        }
+        .btn-vault:hover {
+            background: #5530a0;
+        }
+        .btn-copy {
+            background: #28a745;
+            color: white;
+        }
+        .btn-copy:hover {
+            background: #1e7e34;
+        }
+        .token-output {
+            width: 100%;
+            min-height: 60px;
+            resize: vertical;
+            border-radius: 6px;
+            border: 1px solid #d9e1ec;
+            padding: 4px 6px;
+            font-size: 0.6rem;
+            font-family: monospace;
+            background: #fafcfe;
+            color: #1e2a3a;
+            word-break: break-all;
+        }
+        .vault-list {
+            max-height: 100px;
+            overflow-y: auto;
+            font-size: 0.6rem;
+            background: white;
+            border-radius: 6px;
+            padding: 4px 8px;
+            border: 1px solid #e2e8f0;
+        }
+        .vault-list .vault-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2px 0;
+            border-bottom: 1px solid #f0f4fa;
+        }
+        .vault-list .vault-item:last-child {
+            border-bottom: none;
+        }
+        .vault-list .vault-item .vault-token {
+            font-family: monospace;
+            font-size: 0.5rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 200px;
+        }
+        .vault-list .vault-item .vault-actions button {
+            padding: 1px 6px;
+            border-radius: 30px;
+            border: none;
+            font-size: 0.5rem;
+            cursor: pointer;
+            margin-left: 4px;
+        }
+
         @media (max-width: 480px) {
             .form-grid {
                 grid-template-columns: 1fr 1fr;
@@ -803,6 +921,58 @@
             <div class="card">
                 <h3><i class="fas fa-edit"></i> <span data-i18n="enterReadings">Patient Assessment & Labs</span></h3>
 
+                <!-- CAREGIVER IDENTIFICATION SECTION -->
+                <div class="caregiver-section">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                        <span style="font-weight:700; font-size:0.7rem; color:#005792;"><i class="fas fa-user-md"></i> Caregiver Identity</span>
+                        <span style="font-size:0.5rem; color:#6f7d8f;">Device: <span id="deviceIdDisplay" style="font-family:monospace;">—</span></span>
+                    </div>
+                    <div class="meta-row">
+                        <div class="meta-field">
+                            <label>Caregiver Name</label>
+                            <input id="caregiverName" type="text" placeholder="e.g. Moustafa Ali" />
+                        </div>
+                        <div class="meta-field">
+                            <label>License / ID</label>
+                            <input id="caregiverLicense" type="text" placeholder="e.g. PT-123456" />
+                        </div>
+                    </div>
+                    <div class="meta-row">
+                        <div class="meta-field">
+                            <label>Issuing Authority</label>
+                            <input id="issuingAuthority" type="text" placeholder="e.g. Klinik Rosenhof" />
+                        </div>
+                        <div class="meta-field">
+                            <label>Encounter Reference</label>
+                            <input id="encounterRef" type="text" placeholder="e.g. ENC-2025-0001" />
+                        </div>
+                    </div>
+                    <div class="meta-actions">
+                        <button class="btn-token" id="generateTokenBtn"><i class="fas fa-fingerprint"></i> Generate Token</button>
+                        <button class="btn-copy" id="copyTokenBtn"><i class="fas fa-copy"></i> Copy</button>
+                        <button class="btn-vault" id="saveToVaultBtn"><i class="fas fa-vault"></i> Save to Vault</button>
+                        <span style="font-size:0.6rem; color:#6f7d8f;" id="tokenStatus">No token generated</span>
+                    </div>
+                    <div style="margin-top:4px;">
+                        <textarea class="token-output" id="tokenOutput" readonly placeholder="Generated session token will appear here. Share manually with verifier."></textarea>
+                    </div>
+                </div>
+
+                <!-- TOKEN VAULT -->
+                <div class="caregiver-section" style="margin-top:4px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                        <span style="font-weight:700; font-size:0.7rem; color:#6f42c1;"><i class="fas fa-vault"></i> Token Vault</span>
+                        <span style="font-size:0.5rem; color:#6f7d8f;" id="vaultCount">0 tokens</span>
+                    </div>
+                    <div class="vault-list" id="vaultList">
+                        <div style="color:#6f7d8f; font-size:0.6rem; text-align:center; padding:4px 0;">No tokens in vault. Generate and save tokens for verification.</div>
+                    </div>
+                    <div class="meta-actions" style="margin-top:4px;">
+                        <button class="btn-outline" id="clearVaultBtn" style="font-size:0.55rem; padding:2px 10px;"><i class="fas fa-trash"></i> Clear Vault</button>
+                        <button class="btn-outline" id="exportVaultBtn" style="font-size:0.55rem; padding:2px 10px;"><i class="fas fa-file-export"></i> Export Vault</button>
+                    </div>
+                </div>
+
                 <div class="demo-bar">
                     <div class="demo-group">
                         <label><i class="fas fa-venus-mars"></i></label>
@@ -875,6 +1045,7 @@
                             <th><span data-i18n="id">ID</span></th>
                             <th><span data-i18n="date">Date</span></th>
                             <th><span data-i18n="profile">Profile</span></th>
+                            <th>Caregiver</th>
                             <th>Gender</th>
                             <th>Age</th>
                             <th>BMI</th>
@@ -887,7 +1058,7 @@
                         </tr>
                     </thead>
                     <tbody id="historyBody">
-                        <tr><td colspan="12" style="text-align:center; color:#6f7d8f; font-size:0.65rem;"><span data-i18n="noEncounters">No encounters yet.</span></td></tr>
+                        <tr><td colspan="13" style="text-align:center; color:#6f7d8f; font-size:0.65rem;"><span data-i18n="noEncounters">No encounters yet.</span></td></tr>
                     </tbody>
                 </table>
             </div>
@@ -916,701 +1087,1178 @@
     <script>
         // ============================================================
         //  MyMedfit BRAVO PRO – Patient‑Centred Care
-        //  All assessment and lab fields preserved exactly as provided
+        //  WITH Caregiver Identification & Token Vault System
+        //  ANCHOR-compatible: tokens can be shared manually with verifier
         // ============================================================
 
-        // Define the field definitions outside the closure so they're globally accessible
+        // SHARED SECRET KEY for token verification (same as verifier tool)
+        const TOKEN_KEY_STRING = "local-offline-signature";
+
+        function base64UrlEncode(str) {
+            return btoa(str)
+                .replace(/\+/g, "-")
+                .replace(/\//g, "_")
+                .replace(/=+$/g, "");
+        }
+
+        function generateSessionId() {
+            const random = crypto.getRandomValues(new Uint8Array(16));
+            return Array.from(random, (b) => b.toString(16).padStart(2, "0")).join("");
+        }
+
+        function getOrCreateDeviceId() {
+            const key = "encounter_device_id";
+            let id = null;
+            try {
+                id = localStorage.getItem(key);
+            } catch (e) { id = null; }
+            if (!id) {
+                id = crypto.randomUUID ? crypto.randomUUID() : generateSessionId();
+                try {
+                    localStorage.setItem(key, id);
+                } catch (e) {}
+            }
+            return id;
+        }
+
+        // ============================================================
+        //  FIELD_DEFS – ALL ASSESSMENT AND LAB FIELDS
+        // ============================================================
         const FIELD_DEFS = {
             acute: [
-                // === FUNCTIONAL SCORES (ICF b280, d450, b130, d230) ===
                 { id: 'pain', label: 'Pain (NRS)', unit: '0‑10', step: '1', max: 10 },
                 { id: 'mobility', label: 'Mobility', unit: '0‑10', step: '1', max: 10 },
                 { id: 'fatigue', label: 'Fatigue', unit: '0‑10', step: '1', max: 10 },
                 { id: 'function', label: 'Global Function', unit: '0‑10', step: '1', max: 10 },
-                // === VITAL SIGNS (ICF b410, b420) ===
                 { id: 'hr', label: 'Heart Rate', unit: 'bpm', step: '1' },
                 { id: 'sbp', label: 'SBP', unit: 'mmHg', step: '1' },
                 { id: 'dbp', label: 'DBP', unit: 'mmHg', step: '1' },
-                // === METABOLIC (ICF b540) – Home POCT ===
                 { id: 'glucose', label: 'Fasting Glucose', unit: 'mmol/L', step: '0.1' },
                 { id: 'hba1c', label: 'HbA1c', unit: '%', step: '0.1' },
-                // === LIPIDS (ICF b) – Clinic POCT ===
                 { id: 'chol', label: 'Total Cholesterol', unit: 'mmol/L', step: '0.1' },
                 { id: 'ldl', label: 'LDL', unit: 'mmol/L', step: '0.1' },
                 { id: 'hdl', label: 'HDL', unit: 'mmol/L', step: '0.1' },
                 { id: 'trig', label: 'Triglycerides', unit: 'mmol/L', step: '0.1' },
-                // === RENAL (ICF b610) – Clinic POCT ===
                 { id: 'creatinine', label: 'Creatinine', unit: 'μmol/L', step: '1' },
                 { id: 'egfr', label: 'eGFR', unit: 'mL/min/1.73m²', step: '1' },
-                // === NUTRITION / ANAEMIA (ICF b430, b530) – Clinic POCT ===
                 { id: 'hb', label: 'Haemoglobin (Hb)', unit: 'g/dL', step: '0.1' },
                 { id: 'albumin', label: 'Albumin', unit: 'g/L', step: '0.1' },
-                // === INFLAMMATION (ICF b) – Clinic POCT ===
                 { id: 'crp', label: 'CRP', unit: 'mg/L', step: '0.1' },
-                // === CARDIAC (ICF b410) – Clinic POCT ===
                 { id: 'ef', label: 'Ejection Fraction', unit: '%', step: '1' },
                 { id: 'bnp', label: 'BNP / NT‑proBNP', unit: 'pg/mL', step: '1' },
-                // === RESPIRATORY (ICF b440) – Home POCT ===
                 { id: 'fev1', label: 'FEV1', unit: 'L', step: '0.1' },
                 { id: 'fvc', label: 'FVC', unit: 'L', step: '0.1' },
             ],
             preventive: [
-                // === FUNCTIONAL SCORES ===
                 { id: 'pain', label: 'Pain (NRS)', unit: '0‑10', step: '1', max: 10 },
                 { id: 'mobility', label: 'Mobility', unit: '0‑10', step: '1', max: 10 },
                 { id: 'fatigue', label: 'Fatigue', unit: '0‑10', step: '1', max: 10 },
                 { id: 'function', label: 'Global Function', unit: '0‑10', step: '1', max: 10 },
-                // === VITAL SIGNS ===
                 { id: 'hr', label: 'Heart Rate', unit: 'bpm', step: '1' },
                 { id: 'sbp', label: 'SBP', unit: 'mmHg', step: '1' },
                 { id: 'dbp', label: 'DBP', unit: 'mmHg', step: '1' },
-                // === METABOLIC ===
                 { id: 'glucose', label: 'Fasting Glucose', unit: 'mmol/L', step: '0.1' },
                 { id: 'hba1c', label: 'HbA1c', unit: '%', step: '0.1' },
-                // === LIPIDS ===
                 { id: 'chol', label: 'Total Cholesterol', unit: 'mmol/L', step: '0.1' },
                 { id: 'ldl', label: 'LDL', unit: 'mmol/L', step: '0.1' },
                 { id: 'hdl', label: 'HDL', unit: 'mmol/L', step: '0.1' },
                 { id: 'trig', label: 'Triglycerides', unit: 'mmol/L', step: '0.1' },
-                // === RENAL ===
                 { id: 'creatinine', label: 'Creatinine', unit: 'μmol/L', step: '1' },
                 { id: 'egfr', label: 'eGFR', unit: 'mL/min/1.73m²', step: '1' },
-                // === NUTRITION / ANAEMIA ===
                 { id: 'hb', label: 'Haemoglobin (Hb)', unit: 'g/dL', step: '0.1' },
                 { id: 'albumin', label: 'Albumin', unit: 'g/L', step: '0.1' },
-                // === INFLAMMATION ===
                 { id: 'crp', label: 'CRP', unit: 'mg/L', step: '0.1' },
-                // === CARDIAC ===
                 { id: 'ef', label: 'Ejection Fraction', unit: '%', step: '1' },
-                // === RESPIRATORY ===
                 { id: 'fev1', label: 'FEV1', unit: 'L', step: '0.1' },
                 { id: 'fvc', label: 'FVC', unit: 'L', step: '0.1' },
-                // === BONE HEALTH ===
                 { id: 'bmd_t_score', label: 'BMD T‑Score', unit: 'SD', step: '0.1' },
-                // === LIFESTYLE ===
                 { id: 'exercise', label: 'Exercise', unit: 'min/day', step: '5' },
             ],
             palliative: [
-                // === FUNCTIONAL SCORES ===
                 { id: 'pain', label: 'Pain (NRS)', unit: '0‑10', step: '1', max: 10 },
                 { id: 'mobility', label: 'Mobility', unit: '0‑10', step: '1', max: 10 },
                 { id: 'fatigue', label: 'Fatigue', unit: '0‑10', step: '1', max: 10 },
                 { id: 'function', label: 'Global Function', unit: '0‑10', step: '1', max: 10 },
-                // === VITAL SIGNS ===
                 { id: 'hr', label: 'Heart Rate', unit: 'bpm', step: '1' },
                 { id: 'sbp', label: 'SBP', unit: 'mmHg', step: '1' },
                 { id: 'dbp', label: 'DBP', unit: 'mmHg', step: '1' },
-                // === METABOLIC ===
                 { id: 'glucose', label: 'Fasting Glucose', unit: 'mmol/L', step: '0.1' },
                 { id: 'hba1c', label: 'HbA1c', unit: '%', step: '0.1' },
-                // === LIPIDS ===
                 { id: 'chol', label: 'Total Cholesterol', unit: 'mmol/L', step: '0.1' },
                 { id: 'ldl', label: 'LDL', unit: 'mmol/L', step: '0.1' },
                 { id: 'hdl', label: 'HDL', unit: 'mmol/L', step: '0.1' },
                 { id: 'trig', label: 'Triglycerides', unit: 'mmol/L', step: '0.1' },
-                // === RENAL ===
                 { id: 'creatinine', label: 'Creatinine', unit: 'μmol/L', step: '1' },
                 { id: 'egfr', label: 'eGFR', unit: 'mL/min/1.73m²', step: '1' },
-                // === NUTRITION / ANAEMIA ===
                 { id: 'hb', label: 'Haemoglobin (Hb)', unit: 'g/dL', step: '0.1' },
                 { id: 'albumin', label: 'Albumin', unit: 'g/L', step: '0.1' },
-                // === INFLAMMATION ===
                 { id: 'crp', label: 'CRP', unit: 'mg/L', step: '0.1' },
-                // === CARDIAC ===
                 { id: 'ef', label: 'Ejection Fraction', unit: '%', step: '1' },
                 { id: 'bnp', label: 'BNP / NT‑proBNP', unit: 'pg/mL', step: '1' },
-                // === RESPIRATORY ===
                 { id: 'fev1', label: 'FEV1', unit: 'L', step: '0.1' },
                 { id: 'fvc', label: 'FVC', unit: 'L', step: '0.1' },
-                // === PALLIATIVE SPECIFIC ===
                 { id: 'comfort', label: 'Comfort Score', unit: '0‑10', step: '1', max: 10 },
             ]
         };
 
-        // Now define the rest of the application inside the closure
-        (function() {
-            'use strict';
+        // ============================================================
+        //  APPLICATION STATE
+        // ============================================================
+        const i18n = {
+            en: {
+                step1: 'Enter patient data & labs',
+                step2: 'Save & view insights',
+                enterReadings: 'Patient Assessment & Labs',
+                clear: 'Clear',
+                saveEncounter: 'Save',
+                riskInsights: 'Care Insights & Trends',
+                saveToSeeRisk: 'Save an encounter to see recommendations.',
+                compositeIndex: 'Functionality Index',
+                aiPlaceholder: 'Evidence‑based recommendations appear after saving.',
+                history: 'Encounter History & Trend Log',
+                id: 'ID',
+                date: 'Date',
+                profile: 'Profile',
+                pain: 'Pain',
+                mobility: 'Mobility',
+                fatigue: 'Fatigue',
+                function: 'Function',
+                functionIndex: 'Index',
+                action: 'Action',
+                noEncounters: 'No encounters yet.',
+                footerIp: 'IP',
+                pdfTitle: 'Care Report',
+                pdfPatient: 'Patient',
+                pdfGender: 'Gender',
+                pdfAge: 'Age',
+                pdfDate: 'Report Date',
+                pdfCurrentReadings: 'Current Check‑in',
+                pdfCareIndex: 'Functionality Index',
+                pdfIcfDomains: 'ICF Domains',
+                pdfTips: 'Care Tips',
+                pdfTrend: 'Trend Summary (last 5)',
+                pdfFooter: 'Powered by MyMedfit BRAVO PRO · virtualcaresolution.de',
+            },
+            de: {
+                step1: 'Patientendaten & Laborwerte eingeben',
+                step2: 'Speichern & Einblicke anzeigen',
+                enterReadings: 'Patientenbewertung & Labor',
+                clear: 'Löschen',
+                saveEncounter: 'Speichern',
+                riskInsights: 'Pflegeeinblicke & Trends',
+                saveToSeeRisk: 'Speichern Sie einen Termin, um Empfehlungen zu sehen.',
+                compositeIndex: 'Funktionalitätsindex',
+                aiPlaceholder: 'Evidenzbasierte Empfehlungen erscheinen nach dem Speichern.',
+                history: 'Terminverlauf & Trendprotokoll',
+                id: 'ID',
+                date: 'Datum',
+                profile: 'Profil',
+                pain: 'Schmerz',
+                mobility: 'Mobilität',
+                fatigue: 'Fatigue',
+                function: 'Funktion',
+                functionIndex: 'Index',
+                action: 'Aktion',
+                noEncounters: 'Noch keine Termine.',
+                footerIp: 'IP',
+                pdfTitle: 'Pflegebericht',
+                pdfPatient: 'Patient',
+                pdfGender: 'Geschlecht',
+                pdfAge: 'Alter',
+                pdfDate: 'Berichtsdatum',
+                pdfCurrentReadings: 'Aktueller Check‑in',
+                pdfCareIndex: 'Funktionalitätsindex',
+                pdfIcfDomains: 'ICF-Domänen',
+                pdfTips: 'Pflegetipps',
+                pdfTrend: 'Trendübersicht (letzte 5)',
+                pdfFooter: 'Betrieben von MyMedfit BRAVO PRO · virtualcaresolution.de',
+            },
+            es: {
+                step1: 'Ingresar datos del paciente y laboratorios',
+                step2: 'Guardar y ver insights',
+                enterReadings: 'Evaluación del paciente y laboratorios',
+                clear: 'Limpiar',
+                saveEncounter: 'Guardar',
+                riskInsights: 'Perspectivas de cuidado y tendencias',
+                saveToSeeRisk: 'Guarde un encuentro para ver recomendaciones.',
+                compositeIndex: 'Índice de funcionalidad',
+                aiPlaceholder: 'Recomendaciones basadas en evidencia aparecen después de guardar.',
+                history: 'Historial de encuentros y registro de tendencias',
+                id: 'ID',
+                date: 'Fecha',
+                profile: 'Perfil',
+                pain: 'Dolor',
+                mobility: 'Movilidad',
+                fatigue: 'Fatiga',
+                function: 'Función',
+                functionIndex: 'Índice',
+                action: 'Acción',
+                noEncounters: 'Aún no hay encuentros.',
+                footerIp: 'IP',
+                pdfTitle: 'Informe de Cuidado',
+                pdfPatient: 'Paciente',
+                pdfGender: 'Género',
+                pdfAge: 'Edad',
+                pdfDate: 'Fecha del Informe',
+                pdfCurrentReadings: 'Control actual',
+                pdfCareIndex: 'Índice de funcionalidad',
+                pdfIcfDomains: 'Dominios ICF',
+                pdfTips: 'Consejos de cuidado',
+                pdfTrend: 'Resumen de tendencia (últimos 5)',
+                pdfFooter: 'Desarrollado por MyMedfit BRAVO PRO · virtualcaresolution.de',
+            },
+            ar: {
+                step1: 'إدخال بيانات المريض والمختبرات',
+                step2: 'حفظ وعرض الرؤى',
+                enterReadings: 'تقييم المريض والمختبرات',
+                clear: 'مسح',
+                saveEncounter: 'حفظ',
+                riskInsights: 'رؤى الرعاية والاتجاهات',
+                saveToSeeRisk: 'احفظ زيارة لرؤية التوصيات.',
+                compositeIndex: 'مؤشر الوظائف',
+                aiPlaceholder: 'تظهر التوصيات القائمة على الأدلة بعد الحفظ.',
+                history: 'سجل الزيارات وسجل الاتجاهات',
+                id: 'المعرف',
+                date: 'التاريخ',
+                profile: 'الملف الشخصي',
+                pain: 'الألم',
+                mobility: 'الحركة',
+                fatigue: 'الإرهاق',
+                function: 'الوظيفة',
+                functionIndex: 'المؤشر',
+                action: 'إجراء',
+                noEncounters: 'لا توجد زيارات بعد.',
+                footerIp: 'IP',
+                pdfTitle: 'تقرير الرعاية',
+                pdfPatient: 'المريض',
+                pdfGender: 'الجنس',
+                pdfAge: 'العمر',
+                pdfDate: 'تاريخ التقرير',
+                pdfCurrentReadings: 'الفحص الحالي',
+                pdfCareIndex: 'مؤشر الوظائف',
+                pdfIcfDomains: 'مجالات ICF',
+                pdfTips: 'نصائح الرعاية',
+                pdfTrend: 'ملخص الاتجاه (آخر 5)',
+                pdfFooter: 'مدعوم من MyMedfit BRAVO PRO · virtualcaresolution.de',
+            }
+        };
 
-            const i18n = {
-                en: {
-                    step1: 'Enter patient data & labs',
-                    step2: 'Save & view insights',
-                    enterReadings: 'Patient Assessment & Labs',
-                    clear: 'Clear',
-                    saveEncounter: 'Save',
-                    riskInsights: 'Care Insights & Trends',
-                    saveToSeeRisk: 'Save an encounter to see recommendations.',
-                    compositeIndex: 'Functionality Index',
-                    aiPlaceholder: 'Evidence‑based recommendations appear after saving.',
-                    history: 'Encounter History & Trend Log',
-                    id: 'ID',
-                    date: 'Date',
-                    profile: 'Profile',
-                    pain: 'Pain',
-                    mobility: 'Mobility',
-                    fatigue: 'Fatigue',
-                    function: 'Function',
-                    functionIndex: 'Index',
-                    action: 'Action',
-                    noEncounters: 'No encounters yet.',
-                    footerIp: 'IP',
-                    pdfTitle: 'Care Report',
-                    pdfPatient: 'Patient',
-                    pdfGender: 'Gender',
-                    pdfAge: 'Age',
-                    pdfDate: 'Report Date',
-                    pdfCurrentReadings: 'Current Check‑in',
-                    pdfCareIndex: 'Functionality Index',
-                    pdfIcfDomains: 'ICF Domains',
-                    pdfTips: 'Care Tips',
-                    pdfTrend: 'Trend Summary (last 5)',
-                    pdfFooter: 'Powered by MyMedfit BRAVO PRO · virtualcaresolution.de',
-                },
-                de: {
-                    step1: 'Patientendaten & Laborwerte eingeben',
-                    step2: 'Speichern & Einblicke anzeigen',
-                    enterReadings: 'Patientenbewertung & Labor',
-                    clear: 'Löschen',
-                    saveEncounter: 'Speichern',
-                    riskInsights: 'Pflegeeinblicke & Trends',
-                    saveToSeeRisk: 'Speichern Sie einen Termin, um Empfehlungen zu sehen.',
-                    compositeIndex: 'Funktionalitätsindex',
-                    aiPlaceholder: 'Evidenzbasierte Empfehlungen erscheinen nach dem Speichern.',
-                    history: 'Terminverlauf & Trendprotokoll',
-                    id: 'ID',
-                    date: 'Datum',
-                    profile: 'Profil',
-                    pain: 'Schmerz',
-                    mobility: 'Mobilität',
-                    fatigue: 'Fatigue',
-                    function: 'Funktion',
-                    functionIndex: 'Index',
-                    action: 'Aktion',
-                    noEncounters: 'Noch keine Termine.',
-                    footerIp: 'IP',
-                    pdfTitle: 'Pflegebericht',
-                    pdfPatient: 'Patient',
-                    pdfGender: 'Geschlecht',
-                    pdfAge: 'Alter',
-                    pdfDate: 'Berichtsdatum',
-                    pdfCurrentReadings: 'Aktueller Check‑in',
-                    pdfCareIndex: 'Funktionalitätsindex',
-                    pdfIcfDomains: 'ICF-Domänen',
-                    pdfTips: 'Pflegetipps',
-                    pdfTrend: 'Trendübersicht (letzte 5)',
-                    pdfFooter: 'Betrieben von MyMedfit BRAVO PRO · virtualcaresolution.de',
-                },
-                es: {
-                    step1: 'Ingresar datos del paciente y laboratorios',
-                    step2: 'Guardar y ver insights',
-                    enterReadings: 'Evaluación del paciente y laboratorios',
-                    clear: 'Limpiar',
-                    saveEncounter: 'Guardar',
-                    riskInsights: 'Perspectivas de cuidado y tendencias',
-                    saveToSeeRisk: 'Guarde un encuentro para ver recomendaciones.',
-                    compositeIndex: 'Índice de funcionalidad',
-                    aiPlaceholder: 'Recomendaciones basadas en evidencia aparecen después de guardar.',
-                    history: 'Historial de encuentros y registro de tendencias',
-                    id: 'ID',
-                    date: 'Fecha',
-                    profile: 'Perfil',
-                    pain: 'Dolor',
-                    mobility: 'Movilidad',
-                    fatigue: 'Fatiga',
-                    function: 'Función',
-                    functionIndex: 'Índice',
-                    action: 'Acción',
-                    noEncounters: 'Aún no hay encuentros.',
-                    footerIp: 'IP',
-                    pdfTitle: 'Informe de Cuidado',
-                    pdfPatient: 'Paciente',
-                    pdfGender: 'Género',
-                    pdfAge: 'Edad',
-                    pdfDate: 'Fecha del Informe',
-                    pdfCurrentReadings: 'Control actual',
-                    pdfCareIndex: 'Índice de funcionalidad',
-                    pdfIcfDomains: 'Dominios ICF',
-                    pdfTips: 'Consejos de cuidado',
-                    pdfTrend: 'Resumen de tendencia (últimos 5)',
-                    pdfFooter: 'Desarrollado por MyMedfit BRAVO PRO · virtualcaresolution.de',
-                },
-                ar: {
-                    step1: 'إدخال بيانات المريض والمختبرات',
-                    step2: 'حفظ وعرض الرؤى',
-                    enterReadings: 'تقييم المريض والمختبرات',
-                    clear: 'مسح',
-                    saveEncounter: 'حفظ',
-                    riskInsights: 'رؤى الرعاية والاتجاهات',
-                    saveToSeeRisk: 'احفظ زيارة لرؤية التوصيات.',
-                    compositeIndex: 'مؤشر الوظائف',
-                    aiPlaceholder: 'تظهر التوصيات القائمة على الأدلة بعد الحفظ.',
-                    history: 'سجل الزيارات وسجل الاتجاهات',
-                    id: 'المعرف',
-                    date: 'التاريخ',
-                    profile: 'الملف الشخصي',
-                    pain: 'الألم',
-                    mobility: 'الحركة',
-                    fatigue: 'الإرهاق',
-                    function: 'الوظيفة',
-                    functionIndex: 'المؤشر',
-                    action: 'إجراء',
-                    noEncounters: 'لا توجد زيارات بعد.',
-                    footerIp: 'IP',
-                    pdfTitle: 'تقرير الرعاية',
-                    pdfPatient: 'المريض',
-                    pdfGender: 'الجنس',
-                    pdfAge: 'العمر',
-                    pdfDate: 'تاريخ التقرير',
-                    pdfCurrentReadings: 'الفحص الحالي',
-                    pdfCareIndex: 'مؤشر الوظائف',
-                    pdfIcfDomains: 'مجالات ICF',
-                    pdfTips: 'نصائح الرعاية',
-                    pdfTrend: 'ملخص الاتجاه (آخر 5)',
-                    pdfFooter: 'مدعوم من MyMedfit BRAVO PRO · virtualcaresolution.de',
+        let currentLang = 'en';
+        const STORAGE_KEY = 'medfitBravo_encounters';
+        const VAULT_KEY = 'medfitBravo_tokenVault';
+        let encounters = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        let tokenVault = JSON.parse(localStorage.getItem(VAULT_KEY)) || [];
+        let currentEncounterId = null;
+        let chartInstance = null;
+        let currentProfile = 'acute';
+        let deviceId = getOrCreateDeviceId();
+        let lastGeneratedToken = null;
+
+        // DOM refs
+        const form = document.getElementById('checkupForm');
+        const formFields = document.getElementById('formFields');
+        const clearBtn = document.getElementById('clearBtn');
+        const riskContainer = document.getElementById('riskContainer');
+        const compositeScore = document.getElementById('compositeScore');
+        const aiInsight = document.getElementById('aiInsight');
+        const pdfBtn = document.getElementById('pdfBtn');
+        const toggleInstrBtn = document.getElementById('toggleInstrBtn');
+        const instructions = document.getElementById('instructions');
+        const historyBody = document.getElementById('historyBody');
+        const historyCount = document.getElementById('historyCount');
+        const encounterNumberSpan = document.getElementById('encounterNumber');
+        const langBtns = document.querySelectorAll('.lang-btn');
+        const ipDisplay = document.getElementById('ipDisplay');
+        const canvas = document.getElementById('trendChart');
+
+        // Caregiver & Token DOM
+        const deviceIdDisplay = document.getElementById('deviceIdDisplay');
+        const caregiverName = document.getElementById('caregiverName');
+        const caregiverLicense = document.getElementById('caregiverLicense');
+        const issuingAuthority = document.getElementById('issuingAuthority');
+        const encounterRef = document.getElementById('encounterRef');
+        const tokenOutput = document.getElementById('tokenOutput');
+        const tokenStatus = document.getElementById('tokenStatus');
+        const generateTokenBtn = document.getElementById('generateTokenBtn');
+        const copyTokenBtn = document.getElementById('copyTokenBtn');
+        const saveToVaultBtn = document.getElementById('saveToVaultBtn');
+        const vaultList = document.getElementById('vaultList');
+        const vaultCount = document.getElementById('vaultCount');
+        const clearVaultBtn = document.getElementById('clearVaultBtn');
+        const exportVaultBtn = document.getElementById('exportVaultBtn');
+
+        // ============================================================
+        //  UTILITY FUNCTIONS
+        // ============================================================
+        function getFieldValue(id) { const el = document.getElementById(id); return el ? el.value : ''; }
+
+        function setFieldValue(id, val) { const el = document.getElementById(id); if (el) el.value = val; }
+
+        function getDemographics() {
+            return {
+                gender: document.getElementById('gender').value,
+                age: parseInt(document.getElementById('age').value) || 0,
+                height: parseFloat(document.getElementById('height').value) || 0,
+                weight: parseFloat(document.getElementById('weight').value) || 0,
+            };
+        }
+
+        function setDemographics(data) {
+            if (data.gender) document.getElementById('gender').value = data.gender;
+            if (data.age) document.getElementById('age').value = data.age;
+            if (data.height) document.getElementById('height').value = data.height;
+            if (data.weight) document.getElementById('weight').value = data.weight;
+        }
+
+        function getGoals() {
+            return {
+                pain: parseInt(document.getElementById('goal_pain').value) || 2,
+                mobility: parseInt(document.getElementById('goal_mobility').value) || 8,
+                energy: parseInt(document.getElementById('goal_energy').value) || 6,
+            };
+        }
+
+        function setGoals(data) {
+            if (data.pain_goal !== undefined) document.getElementById('goal_pain').value = data.pain_goal;
+            if (data.mobility_goal !== undefined) document.getElementById('goal_mobility').value = data.mobility_goal;
+            if (data.energy_goal !== undefined) document.getElementById('goal_energy').value = data.energy_goal;
+        }
+
+        function getCaregiverData() {
+            return {
+                name: caregiverName.value || null,
+                license: caregiverLicense.value || null,
+                authority: issuingAuthority.value || null,
+                encounter_ref: encounterRef.value || null,
+                device_id: deviceId,
+            };
+        }
+
+        function buildForm() {
+            const fields = FIELD_DEFS[currentProfile] || FIELD_DEFS.acute;
+            let html = '';
+            fields.forEach(f => {
+                const maxAttr = f.max ? `max="${f.max}"` : '';
+                html += `
+                    <div class="form-group">
+                        <label>${f.label} <span class="unit">${f.unit}</span></label>
+                        <input type="number" id="${f.id}" step="${f.step || '1'}" ${maxAttr} placeholder="—" />
+                    </div>
+                `;
+            });
+            formFields.innerHTML = html;
+        }
+
+        function getFormData() {
+            const data = {};
+            const fields = FIELD_DEFS[currentProfile] || FIELD_DEFS.acute;
+            fields.forEach(f => data[f.id] = getFieldValue(f.id));
+            data.profile = currentProfile;
+            const demo = getDemographics();
+            data.gender = demo.gender;
+            data.age = demo.age;
+            data.height = demo.height;
+            data.weight = demo.weight;
+            if (demo.height > 0 && demo.weight > 0) {
+                data.bmi = (demo.weight / ((demo.height / 100) ** 2));
+            } else { data.bmi = 0; }
+            const goals = getGoals();
+            data.pain_goal = goals.pain;
+            data.mobility_goal = goals.mobility;
+            data.energy_goal = goals.energy;
+            // Add caregiver data
+            const cg = getCaregiverData();
+            data.caregiver_name = cg.name;
+            data.caregiver_license = cg.license;
+            data.caregiver_authority = cg.authority;
+            data.encounter_ref = cg.encounter_ref;
+            data.device_id = cg.device_id;
+            return data;
+        }
+
+        function setFormData(data) {
+            if (!data) return;
+            const fields = FIELD_DEFS[currentProfile] || FIELD_DEFS.acute;
+            fields.forEach(f => { if (data[f.id] !== undefined) setFieldValue(f.id, data[f.id]); });
+            setDemographics(data);
+            setGoals(data);
+            if (data.caregiver_name) caregiverName.value = data.caregiver_name;
+            if (data.caregiver_license) caregiverLicense.value = data.caregiver_license;
+            if (data.caregiver_authority) issuingAuthority.value = data.caregiver_authority;
+            if (data.encounter_ref) encounterRef.value = data.encounter_ref;
+        }
+
+        function clearFormValues() {
+            const fields = FIELD_DEFS[currentProfile] || FIELD_DEFS.acute;
+            fields.forEach(f => setFieldValue(f.id, ''));
+            document.getElementById('age').value = '';
+            document.getElementById('height').value = '';
+            document.getElementById('weight').value = '';
+            document.getElementById('gender').value = 'female';
+            document.getElementById('goal_pain').value = 2;
+            document.getElementById('goal_mobility').value = 8;
+            document.getElementById('goal_energy').value = 6;
+        }
+
+        function generateEncounterId() {
+            return 'BRAVO' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).substr(2, 3).toUpperCase();
+        }
+
+        // ============================================================
+        //  CARE INDEX
+        // ============================================================
+        function computeCareIndex(data) {
+            const n = (v) => parseFloat(v) || 0;
+            const pain = n(data.pain);
+            const mobility = n(data.mobility);
+            const fatigue = n(data.fatigue);
+            const func = n(data.function);
+            const glucose = n(data.glucose);
+            const fev1 = n(data.fev1);
+            const hb = n(data.hb);
+            const albumin = n(data.albumin);
+            const crp = n(data.crp);
+
+            const painScore = Math.max(0, 10 - pain);
+            const fatigueScore = Math.max(0, 10 - fatigue);
+            const funcScore = Math.min(10, func);
+            const mobilityScore = Math.min(10, mobility);
+
+            let glucoseScore = 10;
+            if (glucose > 0) {
+                if (glucose < 3.9) glucoseScore = Math.max(0, 10 - (3.9 - glucose) / 0.5);
+                else if (glucose > 5.6) glucoseScore = Math.max(0, 10 - (glucose - 5.6) / 2);
+            }
+
+            let fev1Score = 10;
+            if (fev1 > 0) fev1Score = Math.min(10, (fev1 / 3.0) * 10);
+
+            let hbScore = 10;
+            if (hb > 0 && hb < 120) hbScore = Math.max(0, 10 - (120 - hb) / 12);
+
+            let albuminScore = 10;
+            if (albumin > 0 && albumin < 35) albuminScore = Math.max(0, 10 - (35 - albumin) / 5);
+
+            let crpScore = 10;
+            if (crp > 0 && crp > 10) crpScore = Math.max(0, 10 - (crp - 10) / 10);
+
+            const raw = (painScore + mobilityScore + fatigueScore + funcScore + glucoseScore + fev1Score + hbScore +
+                albuminScore + crpScore) / 9;
+            return Math.min(100, Math.round(raw * 2));
+        }
+
+        // ============================================================
+        //  CARE TIPS
+        // ============================================================
+        function generateCareTips(data, goals) {
+            const n = (v) => parseFloat(v) || 0;
+            const pain = n(data.pain);
+            const mobility = n(data.mobility);
+            const fatigue = n(data.fatigue);
+            const func = n(data.function);
+            const glucose = n(data.glucose);
+            const fev1 = n(data.fev1);
+            const hb = n(data.hb);
+            const albumin = n(data.albumin);
+            const crp = n(data.crp);
+            const egfr = n(data.egfr);
+            const ldl = n(data.ldl);
+
+            const tips = [];
+            if (pain > goals.pain + 1) tips.push('🔴 Pain above goal. Consider rest, heat/cold, or prescribed relief.');
+            else if (pain > goals.pain) tips.push('🟡 Pain slightly above goal. Gentle stretching may help.');
+            else tips.push('✅ Pain on track.');
+            if (mobility < goals.mobility - 1) tips.push('🔴 Mobility below goal. Try gentle range‑of‑motion exercises.');
+            else if (mobility < goals.mobility) tips.push('🟡 Mobility slightly below goal. A short walk could help.');
+            else tips.push('✅ Good mobility!');
+            if (fatigue < goals.energy - 1) tips.push('🔴 Fatigue high. Prioritise rest and conserve energy.');
+            else if (fatigue < goals.energy) tips.push('🟡 Fatigue moderate. Plan short bursts of activity.');
+            else tips.push('✅ Energy level is good.');
+            if (func < 4) tips.push('💙 Function limited. Consider OT/PT review.');
+            if (glucose > 0) {
+                if (glucose > 7.0) tips.push('🔴 Glucose elevated (>7.0 mmol/L). Monitor and discuss with care team.');
+                else if (glucose > 5.6) tips.push('🟡 Glucose slightly elevated. Review diet and activity.');
+                else if (glucose < 3.9) tips.push('🟡 Glucose low (<3.9 mmol/L). Have a small snack if symptomatic.');
+                else tips.push('✅ Glucose within normal range.');
+            }
+            if (fev1 > 0) {
+                if (fev1 < 1.0) tips.push('🔴 FEV1 very low (<1.0L). Urgent respiratory review recommended.');
+                else if (fev1 < 1.5) tips.push('🟡 FEV1 reduced. Breathing exercises and review with physio.');
+                else if (fev1 < 2.0) tips.push('🟡 FEV1 moderate. Continue respiratory exercises.');
+                else tips.push('✅ FEV1 good. Maintain respiratory fitness.');
+            }
+            if (hb > 0 && hb < 120) tips.push(`🔴 Anaemia (Hb ${hb} g/dL). Investigate iron, B12, folate status.`);
+            if (albumin > 0 && albumin < 35) tips.push(`🔴 Low albumin (${albumin} g/L). Malnutrition risk – consider nutritional assessment.`);
+            if (crp > 10) tips.push(`🟡 Elevated CRP (${crp} mg/L). Screen for infection or inflammation.`);
+            if (egfr > 0 && egfr < 60) tips.push(`🔴 Reduced eGFR (${egfr}). Monitor renal function, adjust medications.`);
+            if (ldl > 3.0) tips.push(`🟡 Elevated LDL (${ldl} mmol/L). Review diet and consider statin therapy if persistent.`);
+            if (tips.length === 0) tips.push('✅ All markers on track! Keep it up.');
+            return tips;
+        }
+
+        // ============================================================
+        //  RENDER INSIGHTS
+        // ============================================================
+        function renderInsights(data) {
+            if (!data || Object.keys(data).length === 0) {
+                riskContainer.innerHTML =
+                    `<div style="color:#6f7d8f; padding:8px 0; text-align:center; font-size:0.7rem;"><span data-i18n="saveToSeeRisk">Save an encounter to see recommendations.</span></div>`;
+                compositeScore.textContent = '—';
+                aiInsight.innerHTML =
+                    `<i class="fas fa-robot"></i> <span data-i18n="aiPlaceholder">Evidence‑based recommendations appear after saving.</span>`;
+                return;
+            }
+
+            const index = computeCareIndex(data);
+            const goals = getGoals();
+            const tips = generateCareTips(data, goals);
+
+            let html = '<div class="risk-summary">';
+            const items = [
+                { label: 'Pain', val: parseFloat(data.pain) || 0, invert: true },
+                { label: 'Mobility', val: parseFloat(data.mobility) || 0 },
+                { label: 'Fatigue', val: parseFloat(data.fatigue) || 0, invert: true },
+                { label: 'Function', val: parseFloat(data.function) || 0 },
+                { label: 'Glucose', val: parseFloat(data.glucose) || 0, glucose: true },
+                { label: 'FEV1', val: parseFloat(data.fev1) || 0, fev1: true },
+            ];
+            items.forEach(item => {
+                let val = item.val;
+                let cls = 'risk-low';
+                let status = '✅';
+                if (item.glucose) {
+                    if (val > 7.0) { cls = 'risk-high'; status = '⬆️'; } else if (val > 5.6) { cls = 'risk-moderate'; status = '🔶'; } else if (val > 0) { cls = 'risk-low'; status = '✅'; } else { status = '—'; }
+                } else if (item.fev1) {
+                    if (val > 0 && val < 1.0) { cls = 'risk-high'; status = '⬇️'; } else if (val < 1.5) { cls = 'risk-moderate'; status = '🔶'; } else if (val > 0) { cls = 'risk-low'; status = '✅'; } else { status = '—'; }
+                } else if (item.invert) {
+                    if (val > 5) { cls = 'risk-high'; status = '⚠️'; } else if (val > 2) { cls = 'risk-moderate'; status = '🔶'; } else if (val >= 0) { cls = 'risk-low'; status = '✅'; }
+                } else {
+                    if (val < 4) { cls = 'risk-high'; status = '⚠️'; } else if (val < 7) { cls = 'risk-moderate'; status = '🔶'; } else if (val >= 0) { cls = 'risk-low'; status = '✅'; }
                 }
+                if (val === 0 && !item.glucose && !item.fev1) status = '—';
+                html +=
+                    `<div class="risk-item"><span>${item.label}</span><span class="risk-badge ${cls}">${status}</span></div>`;
+            });
+            html += '</div>';
+
+            html += `<div style="font-size:0.6rem; background:#f8fafc; padding:3px 8px; border-radius:6px; margin:3px 0;">
+                        <i class="fas fa-bullseye" style="color:#005792;"></i> Goals: Pain ≤${goals.pain} · Mobility ≥${goals.mobility} · Energy ≥${goals.energy}
+                     </div>`;
+
+            riskContainer.innerHTML = html;
+            compositeScore.textContent = index;
+
+            let tipText = tips.map(t => `<li>${t}</li>`).join('');
+            aiInsight.innerHTML = `<i class="fas fa-robot"></i> <ul>${tipText}</ul>`;
+        }
+
+        // ============================================================
+        //  CHART
+        // ============================================================
+        function updateChart(patientData) {
+            const sorted = [...patientData].sort((a, b) => new Date(a.date) - new Date(b.date));
+            if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
+            if (sorted.length < 1) {
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                return;
+            }
+            const labels = sorted.map(r => r.date);
+            const indices = sorted.map(r => computeCareIndex(r));
+            const ctx = canvas.getContext('2d');
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Functionality Index',
+                        data: indices,
+                        borderColor: '#005792',
+                        backgroundColor: 'rgba(0,87,146,0.1)',
+                        fill: true,
+                        tension: 0.3,
+                        pointBackgroundColor: '#005792',
+                        pointRadius: 2,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx) =>
+                                `Index: ${ctx.parsed.y}` } } },
+                    scales: {
+                        y: { beginAtZero: true, max: 100, grid: { color: '#e9edf2' } },
+                        x: { grid: { display: false }, ticks: { font: { size: 6 } } }
+                    }
+                }
+            });
+        }
+
+        // ============================================================
+        //  SAVE ENCOUNTER
+        // ============================================================
+        function saveEncounter(e) {
+            e.preventDefault();
+            const data = getFormData();
+            const hasValue = Object.values(data).some(v => v && v.trim !== undefined && v.trim() !== '' || typeof v === 'number' && v > 0);
+            if (!hasValue) { alert('Please enter at least one reading.'); return; }
+
+            const id = generateEncounterId();
+            const encounter = { id, date: new Date().toISOString().split('T')[0], profile: currentProfile, ...data };
+            encounters.push(encounter);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(encounters));
+
+            currentEncounterId = id;
+            encounterNumberSpan.textContent = id.slice(-4);
+            renderInsights(data);
+            renderHistory();
+            updateChart(encounters);
+        }
+
+        // ============================================================
+        //  HISTORY
+        // ============================================================
+        function renderHistory() {
+            if (encounters.length === 0) {
+                historyBody.innerHTML =
+                    `<tr><td colspan="13" style="text-align:center; color:#6f7d8f; font-size:0.65rem;"><span data-i18n="noEncounters">No encounters yet.</span></td></tr>`;
+                historyCount.textContent = '0 records';
+                updateChart([]);
+                return;
+            }
+            const sorted = [...encounters].sort((a, b) => new Date(b.date) - new Date(a.date));
+            let html = '';
+            sorted.forEach(enc => {
+                const idx = computeCareIndex(enc);
+                const pain = parseFloat(enc.pain) || 0,
+                    mobility = parseFloat(enc.mobility) || 0;
+                const fatigue = parseFloat(enc.fatigue) || 0,
+                    func = parseFloat(enc.function) || 0;
+                const bmi = parseFloat(enc.bmi) || 0;
+                const gender = enc.gender || '—';
+                const age = enc.age || '—';
+                const caregiver = enc.caregiver_name || '—';
+
+                html += `
+                    <tr>
+                        <td><strong>${enc.id}</strong></td>
+                        <td>${enc.date}</td>
+                        <td>${enc.profile}</td>
+                        <td>${caregiver}</td>
+                        <td>${gender}</td>
+                        <td>${age}</td>
+                        <td>${bmi.toFixed(1)}</td>
+                        <td>${pain}</td>
+                        <td>${mobility}</td>
+                        <td>${fatigue}</td>
+                        <td>${func}</td>
+                        <td><span class="risk-badge ${idx < 40 ? 'risk-high' : idx < 65 ? 'risk-moderate' : 'risk-low'}">${idx}</span></td>
+                        <td>
+                            <button class="btn-sm" data-load='${JSON.stringify(enc)}'><i class="fas fa-eye"></i></button>
+                            <button class="btn-sm danger" data-del='${enc.id}'><i class="fas fa-trash-alt"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+            historyBody.innerHTML = html;
+            historyCount.textContent = `${encounters.length} records`;
+
+            document.querySelectorAll('[data-load]').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const data = JSON.parse(this.dataset.load);
+                    setFormData(data);
+                    currentProfile = data.profile || 'acute';
+                    document.querySelectorAll('.profile-btn').forEach(b => {
+                        b.classList.toggle('active', b.dataset.profile === currentProfile);
+                    });
+                    buildForm();
+                    setFormData(data);
+                    renderInsights(data);
+                    currentEncounterId = data.id;
+                    encounterNumberSpan.textContent = data.id.slice(-4);
+                });
+            });
+
+            document.querySelectorAll('[data-del]').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.dataset.del;
+                    if (!confirm('Delete this encounter?')) return;
+                    encounters = encounters.filter(e => e.id !== id);
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(encounters));
+                    renderHistory();
+                    if (currentEncounterId === id) {
+                        currentEncounterId = null;
+                        encounterNumberSpan.textContent = '0000';
+                        clearFormValues();
+                        renderInsights(null);
+                    }
+                    updateChart(encounters);
+                });
+            });
+            updateChart(encounters);
+        }
+
+        // ============================================================
+        //  PROFILE SWITCH
+        // ============================================================
+        function switchProfile(profile) {
+            currentProfile = profile;
+            document.querySelectorAll('.profile-btn').forEach(b => {
+                b.classList.toggle('active', b.dataset.profile === profile);
+            });
+            buildForm();
+            clearFormValues();
+            renderInsights(null);
+            compositeScore.textContent = '—';
+            aiInsight.innerHTML =
+                `<i class="fas fa-robot"></i> <span data-i18n="aiPlaceholder">Evidence‑based recommendations appear after saving.</span>`;
+            currentEncounterId = null;
+            encounterNumberSpan.textContent = '0000';
+            renderHistory();
+        }
+
+        // ============================================================
+        //  TOKEN GENERATION (ANCHOR-compatible)
+        // ============================================================
+        function generateSessionToken() {
+            tokenOutput.value = '';
+            tokenStatus.textContent = 'Generating...';
+
+            const cg = getCaregiverData();
+            if (!cg.name) {
+                tokenStatus.textContent = '⚠️ Please enter caregiver name.';
+                return;
+            }
+
+            const nowSec = Math.floor(Date.now() / 1000);
+            const expSec = nowSec + 600; // 10 min validity
+
+            const header = {
+                alg: "HS256",
+                typ: "JWT",
+                kid: "antideepfake-session-key",
+                device_id: deviceId,
             };
 
-            let currentLang = 'en';
-            const STORAGE_KEY = 'medfitBravo_encounters';
-            let encounters = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-            let currentEncounterId = null;
-            let chartInstance = null;
-            let currentProfile = 'acute';
+            // Get current assessment data
+            const formData = getFormData();
+            const index = computeCareIndex(formData);
 
-            // DOM refs
-            const form = document.getElementById('checkupForm');
-            const formFields = document.getElementById('formFields');
-            const clearBtn = document.getElementById('clearBtn');
-            const riskContainer = document.getElementById('riskContainer');
-            const compositeScore = document.getElementById('compositeScore');
-            const aiInsight = document.getElementById('aiInsight');
-            const pdfBtn = document.getElementById('pdfBtn');
-            const toggleInstrBtn = document.getElementById('toggleInstrBtn');
-            const instructions = document.getElementById('instructions');
-            const historyBody = document.getElementById('historyBody');
-            const historyCount = document.getElementById('historyCount');
-            const encounterNumberSpan = document.getElementById('encounterNumber');
-            const langBtns = document.querySelectorAll('.lang-btn');
-            const ipDisplay = document.getElementById('ipDisplay');
-            const canvas = document.getElementById('trendChart');
+            const payload = {
+                sub: "did:caregiver:" + cg.name.replace(/\s+/g, '_'),
+                device_id: deviceId,
+                caregiver_name: cg.name,
+                caregiver_license: cg.license || null,
+                issuing_authority: cg.authority || null,
+                encounter_ref: cg.encounter_ref || null,
+                context: "patient_assessment",
+                assessment_date: new Date().toISOString().split('T')[0],
+                functionality_index: index,
+                pain: parseFloat(formData.pain) || 0,
+                mobility: parseFloat(formData.mobility) || 0,
+                fatigue: parseFloat(formData.fatigue) || 0,
+                function: parseFloat(formData.function) || 0,
+                iat: nowSec,
+                exp: expSec,
+                jti: generateSessionId(),
+                version: "anchor-session-1.0.0"
+            };
 
-            // ---------- UTILITIES ----------
-            function getFieldValue(id) { const el = document.getElementById(id); return el ? el.value : ''; }
+            const encodedHeader = base64UrlEncode(JSON.stringify(header));
+            const encodedPayload = base64UrlEncode(JSON.stringify(payload));
+            const signature = base64UrlEncode(TOKEN_KEY_STRING);
 
-            function setFieldValue(id, val) { const el = document.getElementById(id); if (el) el.value = val; }
+            const token = encodedHeader + "." + encodedPayload + "." + signature;
+            tokenOutput.value = token;
+            lastGeneratedToken = token;
+            tokenStatus.textContent = '✅ Token generated. Share with verifier manually.';
+            copyTokenBtn.disabled = false;
+            saveToVaultBtn.disabled = false;
+        }
 
-            function getDemographics() {
-                return {
-                    gender: document.getElementById('gender').value,
-                    age: parseInt(document.getElementById('age').value) || 0,
-                    height: parseFloat(document.getElementById('height').value) || 0,
-                    weight: parseFloat(document.getElementById('weight').value) || 0,
-                };
+        // ============================================================
+        //  TOKEN VAULT
+        // ============================================================
+        function renderVault() {
+            if (tokenVault.length === 0) {
+                vaultList.innerHTML =
+                    `<div style="color:#6f7d8f; font-size:0.6rem; text-align:center; padding:4px 0;">No tokens in vault. Generate and save tokens for verification.</div>`;
+                vaultCount.textContent = '0 tokens';
+                return;
+            }
+            let html = '';
+            tokenVault.forEach((entry, idx) => {
+                const shortToken = entry.token ? entry.token.substring(0, 40) + '...' : '';
+                html += `
+                    <div class="vault-item">
+                        <span class="vault-token">${shortToken}</span>
+                        <span style="font-size:0.5rem; color:#6f7d8f;">${entry.date || ''}</span>
+                        <span class="vault-actions">
+                            <button class="btn-sm" onclick="copyVaultToken(${idx})"><i class="fas fa-copy"></i></button>
+                            <button class="btn-sm danger" onclick="deleteVaultToken(${idx})"><i class="fas fa-trash"></i></button>
+                        </span>
+                    </div>
+                `;
+            });
+            vaultList.innerHTML = html;
+            vaultCount.textContent = tokenVault.length + ' tokens';
+        }
+
+        function saveTokenToVault() {
+            const token = tokenOutput.value.trim();
+            if (!token) {
+                tokenStatus.textContent = '⚠️ No token to save. Generate one first.';
+                return;
+            }
+            tokenVault.push({
+                token: token,
+                date: new Date().toISOString(),
+                caregiver: caregiverName.value || 'Unknown',
+                device: deviceId,
+            });
+            localStorage.setItem(VAULT_KEY, JSON.stringify(tokenVault));
+            renderVault();
+            tokenStatus.textContent = '✅ Token saved to vault.';
+        }
+
+        // Global functions for vault actions
+        window.copyVaultToken = function(idx) {
+            const entry = tokenVault[idx];
+            if (!entry) return;
+            navigator.clipboard.writeText(entry.token).then(() => {
+                tokenStatus.textContent = '✅ Token copied from vault.';
+            }).catch(() => {
+                tokenStatus.textContent = '⚠️ Could not copy. Select and copy manually.';
+            });
+        };
+
+        window.deleteVaultToken = function(idx) {
+            if (!confirm('Delete this token from vault?')) return;
+            tokenVault.splice(idx, 1);
+            localStorage.setItem(VAULT_KEY, JSON.stringify(tokenVault));
+            renderVault();
+            tokenStatus.textContent = '🗑️ Token deleted from vault.';
+        };
+
+        function clearVault() {
+            if (!confirm('Delete ALL tokens from vault?')) return;
+            tokenVault = [];
+            localStorage.setItem(VAULT_KEY, JSON.stringify(tokenVault));
+            renderVault();
+            tokenStatus.textContent = '🗑️ Vault cleared.';
+        }
+
+        function exportVault() {
+            if (tokenVault.length === 0) {
+                tokenStatus.textContent = '⚠️ Vault is empty.';
+                return;
+            }
+            const blob = new Blob([JSON.stringify(tokenVault, null, 2)], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `token_vault_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
+            tokenStatus.textContent = '✅ Vault exported.';
+        }
+
+        // ============================================================
+        //  COPY TOKEN
+        // ============================================================
+        function copyToken() {
+            const token = tokenOutput.value.trim();
+            if (!token) return;
+            navigator.clipboard.writeText(token).then(() => {
+                tokenStatus.textContent = '✅ Token copied to clipboard. Share with verifier.';
+            }).catch(() => {
+                tokenStatus.textContent = '⚠️ Could not copy. Select and copy manually.';
+            });
+        }
+
+        // ============================================================
+        //  PDF GENERATION
+        // ============================================================
+        function generatePDFReport() {
+            const latest = encounters.length > 0 ? encounters[encounters.length - 1] : null;
+            if (!latest) {
+                alert('Please save an encounter first before generating a PDF report.');
+                return;
             }
 
-            function setDemographics(data) {
-                if (data.gender) document.getElementById('gender').value = data.gender;
-                if (data.age) document.getElementById('age').value = data.age;
-                if (data.height) document.getElementById('height').value = data.height;
-                if (data.weight) document.getElementById('weight').value = data.weight;
-            }
+            const dict = i18n[currentLang] || i18n.en;
+            const idx = computeCareIndex(latest);
+            const tips = generateCareTips(latest, getGoals());
+            const last5 = [...encounters].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
 
-            function getGoals() {
-                return {
-                    pain: parseInt(document.getElementById('goal_pain').value) || 2,
-                    mobility: parseInt(document.getElementById('goal_mobility').value) || 8,
-                    energy: parseInt(document.getElementById('goal_energy').value) || 6,
-                };
-            }
+            // ICF domains
+            const icfDomains = [];
+            const pain = parseFloat(latest.pain) || 0;
+            const mobility = parseFloat(latest.mobility) || 0;
+            const fatigue = parseFloat(latest.fatigue) || 0;
+            const func = parseFloat(latest.function) || 0;
+            const glucose = parseFloat(latest.glucose) || 0;
+            const fev1 = parseFloat(latest.fev1) || 0;
+            const hb = parseFloat(latest.hb) || 0;
+            const albumin = parseFloat(latest.albumin) || 0;
+            const egfr = parseFloat(latest.egfr) || 0;
+            const crp = parseFloat(latest.crp) || 0;
+            const ldl = parseFloat(latest.ldl) || 0;
 
-            function setGoals(data) {
-                if (data.pain_goal !== undefined) document.getElementById('goal_pain').value = data.pain_goal;
-                if (data.mobility_goal !== undefined) document.getElementById('goal_mobility').value = data.mobility_goal;
-                if (data.energy_goal !== undefined) document.getElementById('goal_energy').value = data.energy_goal;
+            if (pain > 2) icfDomains.push('Pain (b280) – moderate/severe');
+            else icfDomains.push('Pain (b280) – mild/controlled');
+            if (mobility < 7) icfDomains.push('Mobility (d450) – limited');
+            else icfDomains.push('Mobility (d450) – good');
+            if (fatigue > 6) icfDomains.push('Fatigue (b130) – severe');
+            else if (fatigue > 3) icfDomains.push('Fatigue (b130) – moderate');
+            else icfDomains.push('Fatigue (b130) – mild');
+            if (func < 5) icfDomains.push('Activities (d230) – limited');
+            else icfDomains.push('Activities (d230) – good');
+            if (glucose > 7.0) icfDomains.push('Glucose (b540) – diabetic range');
+            else if (glucose > 5.6) icfDomains.push('Glucose (b540) – prediabetic range');
+            else if (glucose > 0) icfDomains.push('Glucose (b540) – within normal range');
+            if (fev1 > 0) {
+                if (fev1 < 1.0) icfDomains.push('Respiratory function (b440) – severe reduction');
+                else if (fev1 < 1.5) icfDomains.push('Respiratory function (b440) – moderate reduction');
+                else icfDomains.push('Respiratory function (b440) – adequate');
             }
+            if (hb > 0 && hb < 120) icfDomains.push('Haematological (b430) – anaemia');
+            if (albumin > 0 && albumin < 35) icfDomains.push('Nutrition (b530) – at risk');
+            if (egfr > 0 && egfr < 60) icfDomains.push('Renal function (b610) – reduced');
+            if (crp > 10) icfDomains.push('Inflammation (b) – elevated CRP');
+            if (ldl > 3.0) icfDomains.push('Lipids (b) – elevated LDL');
+            icfDomains.push('Participation (d920) – community engagement');
 
-            function getFormData() {
-                const data = {};
-                const fields = FIELD_DEFS[currentProfile] || FIELD_DEFS.acute;
-                fields.forEach(f => data[f.id] = getFieldValue(f.id));
-                data.profile = currentProfile;
-                const demo = getDemographics();
-                data.gender = demo.gender;
-                data.age = demo.age;
-                data.height = demo.height;
-                data.weight = demo.weight;
-                if (demo.height > 0 && demo.weight > 0) {
-                    data.bmi = (demo.weight / ((demo.height / 100) ** 2));
-                } else { data.bmi = parseFloat(getFieldValue('bmi')) || 0; }
-                const goals = getGoals();
-                data.pain_goal = goals.pain;
-                data.mobility_goal = goals.mobility;
-                data.energy_goal = goals.energy;
-                return data;
-            }
+            let trendRows = '';
+            last5.forEach(enc => {
+                const i = computeCareIndex(enc);
+                const p = parseFloat(enc.pain) || 0;
+                const m = parseFloat(enc.mobility) || 0;
+                const f = parseFloat(enc.fatigue) || 0;
+                const fn = parseFloat(enc.function) || 0;
+                const g = parseFloat(enc.glucose) || 0;
+                const fe = parseFloat(enc.fev1) || 0;
+                trendRows += `
+                    <tr>
+                        <td>${enc.date}</td>
+                        <td>${p}</td>
+                        <td>${m}</td>
+                        <td>${f}</td>
+                        <td>${fn}</td>
+                        <td>${g || '—'}</td>
+                        <td>${fe || '—'}</td>
+                        <td><span class="pdf-risk-badge ${i < 40 ? 'pdf-risk-high' : i < 65 ? 'pdf-risk-moderate' : 'pdf-risk-low'}">${i}</span></td>
+                    </tr>
+                `;
+            });
 
-            function setFormData(data) {
-                if (!data) return;
-                const fields = FIELD_DEFS[currentProfile] || FIELD_DEFS.acute;
-                fields.forEach(f => { if (data[f.id] !== undefined) setFieldValue(f.id, data[f.id]); });
-                setDemographics(data);
-                setGoals(data);
-            }
+            let tipsHtml = tips.map(t => `<li>${t}</li>`).join('');
 
-            function clearFormValues() {
-                const fields = FIELD_DEFS[currentProfile] || FIELD_DEFS.acute;
-                fields.forEach(f => setFieldValue(f.id, ''));
-                document.getElementById('age').value = '';
-                document.getElementById('height').value = '';
-                document.getElementById('weight').value = '';
-                document.getElementById('gender').value = 'female';
-                document.getElementById('goal_pain').value = 2;
-                document.getElementById('goal_mobility').value = 8;
-                document.getElementById('goal_energy').value = 6;
-            }
-
-            function generateEncounterId() {
-                return 'BRAVO' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).substr(2, 3).toUpperCase();
-            }
-
-            // ---------- BUILD FORM - THIS IS THE KEY FUNCTION ----------
-            function buildForm() {
-                console.log('Building form for profile:', currentProfile);
-                const fields = FIELD_DEFS[currentProfile] || FIELD_DEFS.acute;
-                console.log('Number of fields:', fields.length);
-                let html = '';
-                fields.forEach(f => {
-                    const maxAttr = f.max ? `max="${f.max}"` : '';
-                    html += `
-                        <div class="form-group">
-                            <label>${f.label} <span class="unit">${f.unit}</span></label>
-                            <input type="number" id="${f.id}" step="${f.step || '1'}" ${maxAttr} placeholder="—" />
+            const reportHTML = `
+                <div class="pdf-report">
+                    <div class="pdf-header">
+                        <a href="https://virtualcaresolution.de" target="_blank" class="pdf-logo">
+                            <span class="logo-v">V</span>
+                            <span class="logo-text">IRTUAL <span>SOLUTIONS</span></span>
+                        </a>
+                        <div class="pdf-title">
+                            ${dict.pdfTitle}
+                            <small>${dict.pdfFooter}</small>
                         </div>
-                    `;
+                    </div>
+
+                    <div class="pdf-section">
+                        <h4>${dict.pdfPatient}</h4>
+                        <div class="pdf-grid-2">
+                            <div class="item"><span class="label">${dict.pdfGender}</span><span class="value">${latest.gender || '—'}</span></div>
+                            <div class="item"><span class="label">${dict.pdfAge}</span><span class="value">${latest.age || '—'}</span></div>
+                            <div class="item"><span class="label">BMI</span><span class="value">${latest.bmi ? latest.bmi.toFixed(1) : '—'}</span></div>
+                            <div class="item"><span class="label">${dict.pdfDate}</span><span class="value">${new Date().toISOString().split('T')[0]}</span></div>
+                            <div class="item"><span class="label">Profile</span><span class="value">${latest.profile || '—'}</span></div>
+                            <div class="item"><span class="label">Caregiver</span><span class="value">${latest.caregiver_name || '—'}</span></div>
+                            <div class="item"><span class="label">Device ID</span><span class="value" style="font-family:monospace;font-size:0.6rem;">${latest.device_id || '—'}</span></div>
+                        </div>
+                    </div>
+
+                    <div class="pdf-section">
+                        <h4>${dict.pdfCurrentReadings}</h4>
+                        <div class="pdf-grid-2">
+                            <div class="item"><span class="label">Pain (NRS 0-10)</span><span class="value">${latest.pain || '—'}</span></div>
+                            <div class="item"><span class="label">Mobility (0-10)</span><span class="value">${latest.mobility || '—'}</span></div>
+                            <div class="item"><span class="label">Fatigue (0-10)</span><span class="value">${latest.fatigue || '—'}</span></div>
+                            <div class="item"><span class="label">Global Function (0-10)</span><span class="value">${latest.function || '—'}</span></div>
+                            <div class="item"><span class="label">Heart Rate (bpm)</span><span class="value">${latest.hr || '—'}</span></div>
+                            <div class="item"><span class="label">SBP / DBP (mmHg)</span><span class="value">${latest.sbp || '—'} / ${latest.dbp || '—'}</span></div>
+                            <div class="item"><span class="label">Fasting Glucose (mmol/L)</span><span class="value">${latest.glucose || '—'}</span></div>
+                            <div class="item"><span class="label">HbA1c (%)</span><span class="value">${latest.hba1c || '—'}</span></div>
+                            <div class="item"><span class="label">Total Cholesterol (mmol/L)</span><span class="value">${latest.chol || '—'}</span></div>
+                            <div class="item"><span class="label">LDL (mmol/L)</span><span class="value">${latest.ldl || '—'}</span></div>
+                            <div class="item"><span class="label">HDL (mmol/L)</span><span class="value">${latest.hdl || '—'}</span></div>
+                            <div class="item"><span class="label">Triglycerides (mmol/L)</span><span class="value">${latest.trig || '—'}</span></div>
+                            <div class="item"><span class="label">Creatinine (μmol/L)</span><span class="value">${latest.creatinine || '—'}</span></div>
+                            <div class="item"><span class="label">eGFR (mL/min/1.73m²)</span><span class="value">${latest.egfr || '—'}</span></div>
+                            <div class="item"><span class="label">Haemoglobin (Hb) (g/dL)</span><span class="value">${latest.hb || '—'}</span></div>
+                            <div class="item"><span class="label">Albumin (g/L)</span><span class="value">${latest.albumin || '—'}</span></div>
+                            <div class="item"><span class="label">CRP (mg/L)</span><span class="value">${latest.crp || '—'}</span></div>
+                            <div class="item"><span class="label">Ejection Fraction (%)</span><span class="value">${latest.ef || '—'}</span></div>
+                            ${latest.bnp ? `<div class="item"><span class="label">BNP/NT‑proBNP (pg/mL)</span><span class="value">${latest.bnp}</span></div>` : ''}
+                            <div class="item"><span class="label">FEV1 (L)</span><span class="value">${latest.fev1 || '—'}</span></div>
+                            <div class="item"><span class="label">FVC (L)</span><span class="value">${latest.fvc || '—'}</span></div>
+                            ${latest.bmd_t_score ? `<div class="item"><span class="label">BMD T‑Score (SD)</span><span class="value">${latest.bmd_t_score}</span></div>` : ''}
+                            ${latest.exercise ? `<div class="item"><span class="label">Exercise (min/day)</span><span class="value">${latest.exercise}</span></div>` : ''}
+                            ${latest.comfort ? `<div class="item"><span class="label">Comfort Score (/10)</span><span class="value">${latest.comfort}</span></div>` : ''}
+                        </div>
+                    </div>
+
+                    <div class="pdf-section">
+                        <h4>${dict.pdfCareIndex}</h4>
+                        <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                            <span style="font-size:2rem; font-weight:800; color:#005792;">${idx}</span>
+                            <span class="pdf-risk-badge ${idx < 40 ? 'pdf-risk-high' : idx < 65 ? 'pdf-risk-moderate' : 'pdf-risk-low'}">
+                                ${idx < 40 ? '⚠️ High Risk' : idx < 65 ? '🔶 Moderate' : '✅ Good'}
+                            </span>
+                            <span style="font-size:0.7rem; color:#4a5b6e;">(0–100, higher is better)</span>
+                        </div>
+                    </div>
+
+                    <div class="pdf-section">
+                        <h4>${dict.pdfIcfDomains}</h4>
+                        <ul style="font-size:0.7rem; margin:0; padding-left:18px; columns:2;">
+                            ${icfDomains.map(d => `<li>${d}</li>`).join('')}
+                        </ul>
+                    </div>
+
+                    <div class="pdf-section">
+                        <h4>${dict.pdfTips}</h4>
+                        <div class="pdf-tips">
+                            <ul>${tipsHtml}</ul>
+                        </div>
+                    </div>
+
+                    ${last5.length > 0 ? `
+                    <div class="pdf-section">
+                        <h4>${dict.pdfTrend}</h4>
+                        <table class="pdf-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Pain</th>
+                                    <th>Mobility</th>
+                                    <th>Fatigue</th>
+                                    <th>Function</th>
+                                    <th>Glucose</th>
+                                    <th>FEV1</th>
+                                    <th>Index</th>
+                                </tr>
+                            </thead>
+                            <tbody>${trendRows}</tbody>
+                        </table>
+                    </div>
+                    ` : ''}
+
+                    <div class="pdf-footer">
+                        <a href="https://virtualcaresolution.de" target="_blank">virtualcaresolution.de</a> · ${dict.pdfFooter}
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('pdfReportContent').innerHTML = reportHTML;
+
+            const element = document.getElementById('pdfReportContent');
+            const opt = {
+                margin: 0.5,
+                filename: `MyMedfit_BRAVO_PRO_Report_${new Date().toISOString().split('T')[0]}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' },
+                pagebreak: { mode: 'avoid-all' }
+            };
+
+            pdfBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+            pdfBtn.disabled = true;
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                pdfBtn.innerHTML = '<i class="fas fa-file-pdf"></i> PDF Report';
+                pdfBtn.disabled = false;
+            }).catch((err) => {
+                console.error('PDF generation error:', err);
+                alert('PDF generation failed. Please try again.');
+                pdfBtn.innerHTML = '<i class="fas fa-file-pdf"></i> PDF Report';
+                pdfBtn.disabled = false;
+            });
+        }
+
+        // ============================================================
+        //  I18N
+        // ============================================================
+        function applyLanguage(lang) {
+            currentLang = lang;
+            langBtns.forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+            const dict = i18n[lang] || i18n.en;
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.dataset.i18n;
+                if (dict[key] !== undefined) el.textContent = dict[key];
+            });
+            const genderSelect = document.getElementById('gender');
+            const opts = genderSelect.options;
+            if (lang === 'ar') { opts[0].text = 'أنثى'; opts[1].text = 'ذكر'; opts[2].text = 'متنوع'; } else if (lang === 'de') { opts[0].text = 'Weiblich'; opts[1].text = 'Männlich'; opts[2].text = 'Divers'; } else if (lang === 'es') { opts[0].text = 'Femenino'; opts[1].text = 'Masculino'; opts[2].text = 'Diverso'; } else { opts[0].text = 'Female'; opts[1].text = 'Male'; opts[2].text = 'Diverse'; }
+        }
+
+        // ============================================================
+        //  IP
+        // ============================================================
+        async function fetchIP() {
+            try {
+                const res = await fetch('https://api.ipify.org?format=json');
+                const data = await res.json();
+                ipDisplay.textContent = data.ip || '—';
+            } catch { ipDisplay.textContent = '—'; }
+        }
+
+        // ============================================================
+        //  INIT
+        // ============================================================
+        function init() {
+            console.log('=== MyMedfit Bravo PRO Initializing ===');
+            console.log('Device ID:', deviceId);
+
+            deviceIdDisplay.textContent = deviceId.substring(0, 12) + '…';
+
+            buildForm();
+            console.log('Form built with', document.getElementById('formFields').children.length, 'fields');
+
+            document.querySelectorAll('.profile-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const profile = this.dataset.profile;
+                    if (profile !== currentProfile) switchProfile(profile);
                 });
-                formFields.innerHTML = html;
-                console.log('Form fields rendered. Child count:', formFields.children.length);
-            }
+            });
 
-            // ---------- CARE INDEX ----------
-            function computeCareIndex(data) {
-                const n = (v) => parseFloat(v) || 0;
-                const pain = n(data.pain);
-                const mobility = n(data.mobility);
-                const fatigue = n(data.fatigue);
-                const func = n(data.function);
-                const glucose = n(data.glucose);
-                const fev1 = n(data.fev1);
-                const hb = n(data.hb);
-                const albumin = n(data.albumin);
-                const crp = n(data.crp);
-
-                const painScore = Math.max(0, 10 - pain);
-                const fatigueScore = Math.max(0, 10 - fatigue);
-                const funcScore = Math.min(10, func);
-                const mobilityScore = Math.min(10, mobility);
-
-                let glucoseScore = 10;
-                if (glucose > 0) {
-                    if (glucose < 3.9) glucoseScore = Math.max(0, 10 - (3.9 - glucose) / 0.5);
-                    else if (glucose > 5.6) glucoseScore = Math.max(0, 10 - (glucose - 5.6) / 2);
-                }
-
-                let fev1Score = 10;
-                if (fev1 > 0) {
-                    fev1Score = Math.min(10, (fev1 / 3.0) * 10);
-                }
-
-                let hbScore = 10;
-                if (hb > 0) {
-                    if (hb < 120) hbScore = Math.max(0, 10 - (120 - hb) / 12);
-                }
-
-                let albuminScore = 10;
-                if (albumin > 0) {
-                    if (albumin < 35) albuminScore = Math.max(0, 10 - (35 - albumin) / 5);
-                }
-
-                let crpScore = 10;
-                if (crp > 0) {
-                    if (crp > 10) crpScore = Math.max(0, 10 - (crp - 10) / 10);
-                }
-
-                const raw = (painScore + mobilityScore + fatigueScore + funcScore + glucoseScore + fev1Score + hbScore +
-                    albuminScore + crpScore) / 9;
-                const index = Math.min(100, Math.round(raw * 2));
-                return index;
-            }
-
-            // ---------- TIPS ----------
-            function generateCareTips(data, goals) {
-                const n = (v) => parseFloat(v) || 0;
-                const pain = n(data.pain);
-                const mobility = n(data.mobility);
-                const fatigue = n(data.fatigue);
-                const func = n(data.function);
-                const glucose = n(data.glucose);
-                const fev1 = n(data.fev1);
-                const hb = n(data.hb);
-                const albumin = n(data.albumin);
-                const crp = n(data.crp);
-                const egfr = n(data.egfr);
-                const ldl = n(data.ldl);
-
-                const tips = [];
-                if (pain > goals.pain + 1) tips.push('🔴 Pain above goal. Consider rest, heat/cold, or prescribed relief.');
-                else if (pain > goals.pain) tips.push('🟡 Pain slightly above goal. Gentle stretching may help.');
-                else tips.push('✅ Pain on track.');
-                if (mobility < goals.mobility - 1) tips.push('🔴 Mobility below goal. Try gentle range‑of‑motion exercises.');
-                else if (mobility < goals.mobility) tips.push('🟡 Mobility slightly below goal. A short walk could help.');
-                else tips.push('✅ Good mobility!');
-                if (fatigue < goals.energy - 1) tips.push('🔴 Fatigue high. Prioritise rest and conserve energy.');
-                else if (fatigue < goals.energy) tips.push('🟡 Fatigue moderate. Plan short bursts of activity.');
-                else tips.push('✅ Energy level is good.');
-                if (func < 4) tips.push('💙 Function limited. Consider OT/PT review.');
-                if (glucose > 0) {
-                    if (glucose > 7.0) tips.push('🔴 Glucose elevated (>7.0 mmol/L). Monitor and discuss with care team.');
-                    else if (glucose > 5.6) tips.push('🟡 Glucose slightly elevated. Review diet and activity.');
-                    else if (glucose < 3.9) tips.push('🟡 Glucose low (<3.9 mmol/L). Have a small snack if symptomatic.');
-                    else tips.push('✅ Glucose within normal range.');
-                }
-                if (fev1 > 0) {
-                    if (fev1 < 1.0) tips.push('🔴 FEV1 very low (<1.0L). Urgent respiratory review recommended.');
-                    else if (fev1 < 1.5) tips.push('🟡 FEV1 reduced. Breathing exercises and review with physio.');
-                    else if (fev1 < 2.0) tips.push('🟡 FEV1 moderate. Continue respiratory exercises.');
-                    else tips.push('✅ FEV1 good. Maintain respiratory fitness.');
-                }
-                if (hb > 0 && hb < 120) {
-                    tips.push(`🔴 Anaemia (Hb ${hb} g/dL). Investigate iron, B12, folate status.`);
-                }
-                if (albumin > 0 && albumin < 35) {
-                    tips.push(`🔴 Low albumin (${albumin} g/L). Malnutrition risk – consider nutritional assessment.`);
-                }
-                if (crp > 10) {
-                    tips.push(`🟡 Elevated CRP (${crp} mg/L). Screen for infection or inflammation.`);
-                }
-                if (egfr > 0 && egfr < 60) {
-                    tips.push(`🔴 Reduced eGFR (${egfr}). Monitor renal function, adjust medications.`);
-                }
-                if (ldl > 3.0) {
-                    tips.push(`🟡 Elevated LDL (${ldl} mmol/L). Review diet and consider statin therapy if persistent.`);
-                }
-                if (tips.length === 0) tips.push('✅ All markers on track! Keep it up.');
-                return tips;
-            }
-
-            // ---------- RENDER ----------
-            function renderInsights(data) {
-                if (!data || Object.keys(data).length === 0) {
-                    riskContainer.innerHTML =
-                        `<div style="color:#6f7d8f; padding:8px 0; text-align:center; font-size:0.7rem;"><span data-i18n="saveToSeeRisk">Save an encounter to see recommendations.</span></div>`;
-                    compositeScore.textContent = '—';
-                    aiInsight.innerHTML =
-                        `<i class="fas fa-robot"></i> <span data-i18n="aiPlaceholder">Evidence‑based recommendations appear after saving.</span>`;
-                    return;
-                }
-
-                const index = computeCareIndex(data);
-                const goals = getGoals();
-                const tips = generateCareTips(data, goals);
-
-                let html = '<div class="risk-summary">';
-                const items = [
-                    { label: 'Pain', val: parseFloat(data.pain) || 0, invert: true },
-                    { label: 'Mobility', val: parseFloat(data.mobility) || 0 },
-                    { label: 'Fatigue', val: parseFloat(data.fatigue) || 0, invert: true },
-                    { label: 'Function', val: parseFloat(data.function) || 0 },
-                    { label: 'Glucose', val: parseFloat(data.glucose) || 0, glucose: true },
-                    { label: 'FEV1', val: parseFloat(data.fev1) || 0, fev1: true },
-                ];
-                items.forEach(item => {
-                    let val = item.val;
-                    let cls = 'risk-low';
-                    let status = '✅';
-                    if (item.glucose) {
-                        if (val > 7.0) { cls = 'risk-high';
-                            status = '⬆️'; } else if (val > 5.6) { cls = 'risk-moderate';
-                            status = '🔶'; } else if (val > 0) { cls = 'risk-low';
-                            status = '✅'; } else { status = '—'; }
-                    } else if (item.fev1) {
-                        if (val > 0 && val < 1.0) { cls = 'risk-high';
-                            status = '⬇️'; } else if (val < 1.5) { cls = 'risk-moderate';
-                            status = '🔶'; } else if (val > 0) { cls = 'risk-low';
-                            status = '✅'; } else { status = '—'; }
-                    } else if (item.invert) {
-                        if (val > 5) { cls = 'risk-high';
-                            status = '⚠️'; } else if (val > 2) { cls = 'risk-moderate';
-                            status = '🔶'; } else if (val >= 0) { cls = 'risk-low';
-                            status = '✅'; }
-                    } else {
-                        if (val < 4) { cls = 'risk-high';
-                            status = '⚠️'; } else if (val < 7) { cls = 'risk-moderate';
-                            status = '🔶'; } else if (val >= 0) { cls = 'risk-low';
-                            status = '✅'; }
-                    }
-                    if (val === 0 && !item.glucose && !item.fev1) status = '—';
-                    html +=
-                        `<div class="risk-item"><span>${item.label}</span><span class="risk-badge ${cls}">${status}</span></div>`;
-                });
-                html += '</div>';
-
-                html += `<div style="font-size:0.6rem; background:#f8fafc; padding:3px 8px; border-radius:6px; margin:3px 0;">
-                            <i class="fas fa-bullseye" style="color:#005792;"></i> Goals: Pain ≤${goals.pain} · Mobility ≥${goals.mobility} · Energy ≥${goals.energy}
-                         </div>`;
-
-                riskContainer.innerHTML = html;
-                compositeScore.textContent = index;
-
-                let tipText = tips.map(t => `<li>${t}</li>`).join('');
-                aiInsight.innerHTML = `<i class="fas fa-robot"></i> <ul>${tipText}</ul>`;
-            }
-
-            // ---------- CHART ----------
-            function updateChart(patientData) {
-                const sorted = [...patientData].sort((a, b) => new Date(a.date) - new Date(b.date));
-                if (chartInstance) { chartInstance.destroy();
-                    chartInstance = null; }
-                if (sorted.length < 1) {
-                    const ctx = canvas.getContext('2d');
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    return;
-                }
-                const labels = sorted.map(r => r.date);
-                const indices = sorted.map(r => computeCareIndex(r));
-                const ctx = canvas.getContext('2d');
-                chartInstance = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Functionality Index',
-                            data: indices,
-                            borderColor: '#005792',
-                            backgroundColor: 'rgba(0,87,146,0.1)',
-                            fill: true,
-                            tension: 0.3,
-                            pointBackgroundColor: '#005792',
-                            pointRadius: 2,
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx) =>
-                                    `Index: ${ctx.parsed.y}` } } },
-                        scales: {
-                            y: { beginAtZero: true, max: 100, grid: { color: '#e9edf2' } },
-                            x: { grid: { display: false }, ticks: { font: { size: 6 } } }
-                        }
-                    }
-                });
-            }
-
-            // ---------- SAVE ----------
-            function saveEncounter(e) {
-                e.preventDefault();
-                const data = getFormData();
-                const hasValue = Object.values(data).some(v => v && v.trim() !== '');
-                if (!hasValue) { alert('Please enter at least one reading.'); return; }
-
-                const id = generateEncounterId();
-                const encounter = { id, date: new Date().toISOString().split('T')[0], profile: currentProfile, ...data };
-                encounters.push(encounter);
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(encounters));
-
-                currentEncounterId = id;
-                encounterNumberSpan.textContent = id.slice(-4);
-                renderInsights(data);
-                renderHistory();
-                updateChart(encounters);
-            }
-
-            // ---------- HISTORY ----------
-            function renderHistory() {
-                if (encounters.length === 0) {
-                    historyBody.innerHTML =
-                        `<tr><td colspan="12" style="text-align:center; color:#6f7d8f; font-size:0.65rem;"><span data-i18n="noEncounters">No encounters yet.</span></td></tr>`;
-                    historyCount.textContent = '0 records';
-                    updateChart([]);
-                    return;
-                }
-                const sorted = [...encounters].sort((a, b) => new Date(b.date) - new Date(a.date));
-                let html = '';
-                sorted.forEach(enc => {
-                    const idx = computeCareIndex(enc);
-                    const pain = parseFloat(enc.pain) || 0,
-                        mobility = parseFloat(enc.mobility) || 0;
-                    const fatigue = parseFloat(enc.fatigue) || 0,
-                        func = parseFloat(enc.function) || 0;
-                    const bmi = parseFloat(enc.bmi) || 0;
-                    const gender = enc.gender || '—';
-                    const age = enc.age || '—';
-
-                    html += `
-                        <tr>
-                            <td><strong>${enc.id}</strong></td>
-                            <td>${enc.date}</td>
-                            <td>${enc.profile}</td>
-                            <td>${gender}</td>
-                            <td>${age}</td>
-                            <td>${bmi.toFixed(1)}</td>
-                            <td>${pain}</td>
-                            <td>${mobility}</td>
-                            <td>${fatigue}</td>
-                            <td>${func}</td>
-                            <td><span class="risk-badge ${idx < 40 ? 'risk-high' : idx < 65 ? 'risk-moderate' : 'risk-low'}">${idx}</span></td>
-                            <td>
-                                <button class="btn-sm" data-load='${JSON.stringify(enc)}'><i class="fas fa-eye"></i></button>
-                                <button class="btn-sm danger" data-del='${enc.id}'><i class="fas fa-trash-alt"></i></button>
-                            </td>
-                        </tr>
-                    `;
-                });
-                historyBody.innerHTML = html;
-                historyCount.textContent = `${encounters.length} records`;
-
-                document.querySelectorAll('[data-load]').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const data = JSON.parse(this.dataset.load);
-                        setFormData(data);
-                        currentProfile = data.profile || 'acute';
-                        document.querySelectorAll('.profile-btn').forEach(b => {
-                            b.classList.toggle('active', b.dataset.profile === currentProfile);
-                        });
-                        buildForm();
-                        setFormData(data);
-                        renderInsights(data);
-                        currentEncounterId = data.id;
-                        encounterNumberSpan.textContent = data.id.slice(-4);
-                    });
-                });
-
-                document.querySelectorAll('[data-del]').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const id = this.dataset.del;
-                        if (!confirm('Delete this encounter?')) return;
-                        encounters = encounters.filter(e => e.id !== id);
-                        localStorage.setItem(STORAGE_KEY, JSON.stringify(encounters));
-                        renderHistory();
-                        if (currentEncounterId === id) {
-                            currentEncounterId = null;
-                            encounterNumberSpan.textContent = '0000';
-                            clearFormValues();
-                            renderInsights(null);
-                        }
-                        updateChart(encounters);
-                    });
-                });
-                updateChart(encounters);
-            }
-
-            // ---------- PROFILE ----------
-            function switchProfile(profile) {
-                currentProfile = profile;
+            if (encounters.length > 0) {
+                const latest = encounters[encounters.length - 1];
+                setFormData(latest);
+                currentProfile = latest.profile || 'acute';
                 document.querySelectorAll('.profile-btn').forEach(b => {
-                    b.classList.toggle('active', b.dataset.profile === profile);
+                    b.classList.toggle('active', b.dataset.profile === currentProfile);
                 });
                 buildForm();
+                setFormData(latest);
+                renderInsights(latest);
+                currentEncounterId = latest.id;
+                encounterNumberSpan.textContent = latest.id.slice(-4);
+            } else {
+                clearFormValues();
+                renderInsights(null);
+            }
+            renderHistory();
+            renderVault();
+            fetchIP();
+
+            form.addEventListener('submit', saveEncounter);
+
+            clearBtn.addEventListener('click', function() {
                 clearFormValues();
                 renderInsights(null);
                 compositeScore.textContent = '—';
@@ -1618,326 +2266,46 @@
                     `<i class="fas fa-robot"></i> <span data-i18n="aiPlaceholder">Evidence‑based recommendations appear after saving.</span>`;
                 currentEncounterId = null;
                 encounterNumberSpan.textContent = '0000';
-                renderHistory();
-            }
+            });
 
-            // ---------- PDF GENERATION ----------
-            function generatePDFReport() {
-                const latest = encounters.length > 0 ? encounters[encounters.length - 1] : null;
-                if (!latest) {
-                    alert('Please save an encounter first before generating a PDF report.');
-                    return;
-                }
+            pdfBtn.addEventListener('click', generatePDFReport);
 
-                const dict = i18n[currentLang] || i18n.en;
-                const idx = computeCareIndex(latest);
-                const tips = generateCareTips(latest, getGoals());
+            let instrVisible = true;
+            toggleInstrBtn.addEventListener('click', function() {
+                instrVisible = !instrVisible;
+                instructions.classList.toggle('collapsed', !instrVisible);
+                toggleInstrBtn.innerHTML = instrVisible ? '<i class="fas fa-chevron-up"></i>' :
+                    '<i class="fas fa-chevron-down"></i>';
+            });
 
-                const last5 = [...encounters].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
-
-                const icfDomains = [];
-                const pain = parseFloat(latest.pain) || 0;
-                const mobility = parseFloat(latest.mobility) || 0;
-                const fatigue = parseFloat(latest.fatigue) || 0;
-                const func = parseFloat(latest.function) || 0;
-                const glucose = parseFloat(latest.glucose) || 0;
-                const fev1 = parseFloat(latest.fev1) || 0;
-                const hb = parseFloat(latest.hb) || 0;
-                const albumin = parseFloat(latest.albumin) || 0;
-                const egfr = parseFloat(latest.egfr) || 0;
-                const crp = parseFloat(latest.crp) || 0;
-                const ldl = parseFloat(latest.ldl) || 0;
-
-                if (pain > 2) icfDomains.push('Pain (b280) – moderate/severe');
-                else icfDomains.push('Pain (b280) – mild/controlled');
-                if (mobility < 7) icfDomains.push('Mobility (d450) – limited');
-                else icfDomains.push('Mobility (d450) – good');
-                if (fatigue > 6) icfDomains.push('Fatigue (b130) – severe');
-                else if (fatigue > 3) icfDomains.push('Fatigue (b130) – moderate');
-                else icfDomains.push('Fatigue (b130) – mild');
-                if (func < 5) icfDomains.push('Activities (d230) – limited');
-                else icfDomains.push('Activities (d230) – good');
-                if (glucose > 7.0) icfDomains.push('Glucose (b540) – diabetic range');
-                else if (glucose > 5.6) icfDomains.push('Glucose (b540) – prediabetic range');
-                else if (glucose > 0) icfDomains.push('Glucose (b540) – within normal range');
-                if (fev1 > 0) {
-                    if (fev1 < 1.0) icfDomains.push('Respiratory function (b440) – severe reduction');
-                    else if (fev1 < 1.5) icfDomains.push('Respiratory function (b440) – moderate reduction');
-                    else icfDomains.push('Respiratory function (b440) – adequate');
-                }
-                if (hb > 0 && hb < 120) icfDomains.push('Haematological (b430) – anaemia');
-                if (albumin > 0 && albumin < 35) icfDomains.push('Nutrition (b530) – at risk');
-                if (egfr > 0 && egfr < 60) icfDomains.push('Renal function (b610) – reduced');
-                if (crp > 10) icfDomains.push('Inflammation (b) – elevated CRP');
-                if (ldl > 3.0) icfDomains.push('Lipids (b) – elevated LDL');
-                icfDomains.push('Participation (d920) – community engagement');
-
-                let trendRows = '';
-                last5.forEach(enc => {
-                    const i = computeCareIndex(enc);
-                    const p = parseFloat(enc.pain) || 0;
-                    const m = parseFloat(enc.mobility) || 0;
-                    const f = parseFloat(enc.fatigue) || 0;
-                    const fn = parseFloat(enc.function) || 0;
-                    const g = parseFloat(enc.glucose) || 0;
-                    const fe = parseFloat(enc.fev1) || 0;
-                    trendRows += `
-                        <tr>
-                            <td>${enc.date}</td>
-                            <td>${p}</td>
-                            <td>${m}</td>
-                            <td>${f}</td>
-                            <td>${fn}</td>
-                            <td>${g || '—'}</td>
-                            <td>${fe || '—'}</td>
-                            <td><span class="pdf-risk-badge ${i < 40 ? 'pdf-risk-high' : i < 65 ? 'pdf-risk-moderate' : 'pdf-risk-low'}">${i}</span></td>
-                        </tr>
-                    `;
+            langBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const lang = this.dataset.lang;
+                    if (lang !== currentLang) applyLanguage(lang);
                 });
+            });
 
-                let tipsHtml = tips.map(t => `<li>${t}</li>`).join('');
+            applyLanguage('en');
 
-                const reportHTML = `
-                    <div class="pdf-report">
-                        <div class="pdf-header">
-                            <a href="https://virtualcaresolution.de" target="_blank" class="pdf-logo">
-                                <span class="logo-v">V</span>
-                                <span class="logo-text">IRTUAL <span>SOLUTIONS</span></span>
-                            </a>
-                            <div class="pdf-title">
-                                ${dict.pdfTitle}
-                                <small>${dict.pdfFooter}</small>
-                            </div>
-                        </div>
+            // Token buttons
+            generateTokenBtn.addEventListener('click', generateSessionToken);
+            copyTokenBtn.addEventListener('click', copyToken);
+            saveToVaultBtn.addEventListener('click', saveTokenToVault);
+            clearVaultBtn.addEventListener('click', clearVault);
+            exportVaultBtn.addEventListener('click', exportVault);
 
-                        <div class="pdf-section">
-                            <h4>${dict.pdfPatient}</h4>
-                            <div class="pdf-grid-2">
-                                <div class="item"><span class="label">${dict.pdfGender}</span><span class="value">${latest.gender || '—'}</span></div>
-                                <div class="item"><span class="label">${dict.pdfAge}</span><span class="value">${latest.age || '—'}</span></div>
-                                <div class="item"><span class="label">BMI</span><span class="value">${latest.bmi ? latest.bmi.toFixed(1) : '—'}</span></div>
-                                <div class="item"><span class="label">${dict.pdfDate}</span><span class="value">${new Date().toISOString().split('T')[0]}</span></div>
-                                <div class="item"><span class="label">Profile</span><span class="value">${latest.profile || '—'}</span></div>
-                            </div>
-                        </div>
+            // Initially disable save-to-vault until token is generated
+            saveToVaultBtn.disabled = true;
+            copyTokenBtn.disabled = true;
 
-                        <div class="pdf-section">
-                            <h4>${dict.pdfCurrentReadings}</h4>
-                            <div class="pdf-grid-2">
-                                <div class="item"><span class="label">Pain (NRS 0-10)</span><span class="value">${latest.pain || '—'}</span></div>
-                                <div class="item"><span class="label">Mobility (0-10)</span><span class="value">${latest.mobility || '—'}</span></div>
-                                <div class="item"><span class="label">Fatigue (0-10)</span><span class="value">${latest.fatigue || '—'}</span></div>
-                                <div class="item"><span class="label">Global Function (0-10)</span><span class="value">${latest.function || '—'}</span></div>
-                                <div class="item"><span class="label">Heart Rate (bpm)</span><span class="value">${latest.hr || '—'}</span></div>
-                                <div class="item"><span class="label">SBP / DBP (mmHg)</span><span class="value">${latest.sbp || '—'} / ${latest.dbp || '—'}</span></div>
-                                <div class="item"><span class="label">Fasting Glucose (mmol/L)</span><span class="value">${latest.glucose || '—'}</span></div>
-                                <div class="item"><span class="label">HbA1c (%)</span><span class="value">${latest.hba1c || '—'}</span></div>
-                                <div class="item"><span class="label">Total Cholesterol (mmol/L)</span><span class="value">${latest.chol || '—'}</span></div>
-                                <div class="item"><span class="label">LDL (mmol/L)</span><span class="value">${latest.ldl || '—'}</span></div>
-                                <div class="item"><span class="label">HDL (mmol/L)</span><span class="value">${latest.hdl || '—'}</span></div>
-                                <div class="item"><span class="label">Triglycerides (mmol/L)</span><span class="value">${latest.trig || '—'}</span></div>
-                                <div class="item"><span class="label">Creatinine (μmol/L)</span><span class="value">${latest.creatinine || '—'}</span></div>
-                                <div class="item"><span class="label">eGFR (mL/min/1.73m²)</span><span class="value">${latest.egfr || '—'}</span></div>
-                                <div class="item"><span class="label">Haemoglobin (Hb) (g/dL)</span><span class="value">${latest.hb || '—'}</span></div>
-                                <div class="item"><span class="label">Albumin (g/L)</span><span class="value">${latest.albumin || '—'}</span></div>
-                                <div class="item"><span class="label">CRP (mg/L)</span><span class="value">${latest.crp || '—'}</span></div>
-                                <div class="item"><span class="label">Ejection Fraction (%)</span><span class="value">${latest.ef || '—'}</span></div>
-                                ${latest.bnp ? `<div class="item"><span class="label">BNP/NT‑proBNP (pg/mL)</span><span class="value">${latest.bnp}</span></div>` : ''}
-                                <div class="item"><span class="label">FEV1 (L)</span><span class="value">${latest.fev1 || '—'}</span></div>
-                                <div class="item"><span class="label">FVC (L)</span><span class="value">${latest.fvc || '—'}</span></div>
-                                ${latest.bmd_t_score ? `<div class="item"><span class="label">BMD T‑Score (SD)</span><span class="value">${latest.bmd_t_score}</span></div>` : ''}
-                                ${latest.exercise ? `<div class="item"><span class="label">Exercise (min/day)</span><span class="value">${latest.exercise}</span></div>` : ''}
-                                ${latest.comfort ? `<div class="item"><span class="label">Comfort Score (/10)</span><span class="value">${latest.comfort}</span></div>` : ''}
-                            </div>
-                        </div>
+            console.log('=== Initialization complete ===');
+        }
 
-                        <div class="pdf-section">
-                            <h4>${dict.pdfCareIndex}</h4>
-                            <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
-                                <span style="font-size:2rem; font-weight:800; color:#005792;">${idx}</span>
-                                <span class="pdf-risk-badge ${idx < 40 ? 'pdf-risk-high' : idx < 65 ? 'pdf-risk-moderate' : 'pdf-risk-low'}">
-                                    ${idx < 40 ? '⚠️ High Risk' : idx < 65 ? '🔶 Moderate' : '✅ Good'}
-                                </span>
-                                <span style="font-size:0.7rem; color:#4a5b6e;">(0–100, higher is better)</span>
-                            </div>
-                        </div>
-
-                        <div class="pdf-section">
-                            <h4>${dict.pdfIcfDomains}</h4>
-                            <ul style="font-size:0.7rem; margin:0; padding-left:18px; columns:2;">
-                                ${icfDomains.map(d => `<li>${d}</li>`).join('')}
-                            </ul>
-                        </div>
-
-                        <div class="pdf-section">
-                            <h4>${dict.pdfTips}</h4>
-                            <div class="pdf-tips">
-                                <ul>${tipsHtml}</ul>
-                            </div>
-                        </div>
-
-                        ${last5.length > 0 ? `
-                        <div class="pdf-section">
-                            <h4>${dict.pdfTrend}</h4>
-                            <table class="pdf-table">
-                                <thead>
-                                    <tr>
-                                        <th>Date</th>
-                                        <th>Pain</th>
-                                        <th>Mobility</th>
-                                        <th>Fatigue</th>
-                                        <th>Function</th>
-                                        <th>Glucose</th>
-                                        <th>FEV1</th>
-                                        <th>Index</th>
-                                    </tr>
-                                </thead>
-                                <tbody>${trendRows}</tbody>
-                            </table>
-                        </div>
-                        ` : ''}
-
-                        <div class="pdf-footer">
-                            <a href="https://virtualcaresolution.de" target="_blank">virtualcaresolution.de</a> · ${dict.pdfFooter}
-                        </div>
-                    </div>
-                `;
-
-                document.getElementById('pdfReportContent').innerHTML = reportHTML;
-
-                const element = document.getElementById('pdfReportContent');
-                const opt = {
-                    margin: 0.5,
-                    filename: `MyMedfit_BRAVO_PRO_Report_${new Date().toISOString().split('T')[0]}.pdf`,
-                    image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: { scale: 2, useCORS: true },
-                    jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' },
-                    pagebreak: { mode: 'avoid-all' }
-                };
-
-                pdfBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
-                pdfBtn.disabled = true;
-
-                html2pdf().set(opt).from(element).save().then(() => {
-                    pdfBtn.innerHTML = '<i class="fas fa-file-pdf"></i> PDF Report';
-                    pdfBtn.disabled = false;
-                }).catch((err) => {
-                    console.error('PDF generation error:', err);
-                    alert('PDF generation failed. Please try again.');
-                    pdfBtn.innerHTML = '<i class="fas fa-file-pdf"></i> PDF Report';
-                    pdfBtn.disabled = false;
-                });
-            }
-
-            // ---------- I18N ----------
-            function applyLanguage(lang) {
-                currentLang = lang;
-                langBtns.forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
-                const dict = i18n[lang] || i18n.en;
-                document.querySelectorAll('[data-i18n]').forEach(el => {
-                    const key = el.dataset.i18n;
-                    if (dict[key] !== undefined) el.textContent = dict[key];
-                });
-                const genderSelect = document.getElementById('gender');
-                const opts = genderSelect.options;
-                if (lang === 'ar') { opts[0].text = 'أنثى';
-                    opts[1].text = 'ذكر';
-                    opts[2].text = 'متنوع'; } else if (lang === 'de') { opts[0].text = 'Weiblich';
-                    opts[1].text = 'Männlich';
-                    opts[2].text = 'Divers'; } else if (lang === 'es') { opts[0].text = 'Femenino';
-                    opts[1].text = 'Masculino';
-                    opts[2].text = 'Diverso'; } else { opts[0].text = 'Female';
-                    opts[1].text = 'Male';
-                    opts[2].text = 'Diverse'; }
-            }
-
-            // ---------- IP ----------
-            async function fetchIP() {
-                try {
-                    const res = await fetch('https://api.ipify.org?format=json');
-                    const data = await res.json();
-                    ipDisplay.textContent = data.ip || '—';
-                } catch { ipDisplay.textContent = '—'; }
-            }
-
-            // ---------- INIT ----------
-            function init() {
-                console.log('=== MyMedfit Bravo PRO Initializing ===');
-                console.log('FIELD_DEFS available:', Object.keys(FIELD_DEFS));
-                
-                // Build the form first
-                buildForm();
-                console.log('Form built with', document.getElementById('formFields').children.length, 'fields');
-                
-                // Set up profile buttons
-                document.querySelectorAll('.profile-btn').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const profile = this.dataset.profile;
-                        if (profile !== currentProfile) switchProfile(profile);
-                    });
-                });
-
-                // Load saved data if any
-                if (encounters.length > 0) {
-                    const latest = encounters[encounters.length - 1];
-                    setFormData(latest);
-                    currentProfile = latest.profile || 'acute';
-                    document.querySelectorAll('.profile-btn').forEach(b => {
-                        b.classList.toggle('active', b.dataset.profile === currentProfile);
-                    });
-                    buildForm();
-                    setFormData(latest);
-                    renderInsights(latest);
-                    currentEncounterId = latest.id;
-                    encounterNumberSpan.textContent = latest.id.slice(-4);
-                } else {
-                    clearFormValues();
-                    renderInsights(null);
-                }
-                renderHistory();
-                fetchIP();
-
-                form.addEventListener('submit', saveEncounter);
-
-                clearBtn.addEventListener('click', function() {
-                    clearFormValues();
-                    renderInsights(null);
-                    compositeScore.textContent = '—';
-                    aiInsight.innerHTML =
-                        `<i class="fas fa-robot"></i> <span data-i18n="aiPlaceholder">Evidence‑based recommendations appear after saving.</span>`;
-                    currentEncounterId = null;
-                    encounterNumberSpan.textContent = '0000';
-                });
-
-                pdfBtn.addEventListener('click', generatePDFReport);
-
-                let instrVisible = true;
-                toggleInstrBtn.addEventListener('click', function() {
-                    instrVisible = !instrVisible;
-                    instructions.classList.toggle('collapsed', !instrVisible);
-                    toggleInstrBtn.innerHTML = instrVisible ? '<i class="fas fa-chevron-up"></i>' :
-                        '<i class="fas fa-chevron-down"></i>';
-                });
-
-                langBtns.forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const lang = this.dataset.lang;
-                        if (lang !== currentLang) applyLanguage(lang);
-                    });
-                });
-
-                applyLanguage('en');
-                console.log('=== Initialization complete ===');
-            }
-
-            // Run init when DOM is ready
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', init);
-            } else {
-                init();
-            }
-
-        })();
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
     </script>
 
 </body>
